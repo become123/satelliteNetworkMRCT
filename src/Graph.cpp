@@ -2,8 +2,9 @@
 
 namespace Graph
 {
-    Edge:: Edge(int t, int w) {
-        to = t;
+    Edge:: Edge(int _from, int _to, int w) {
+        from = _from;
+        to = _to;
         weight = w;
     }
 
@@ -14,12 +15,12 @@ namespace Graph
 
     void Graph::addEdge(int u, int v, int w, bool weighted) {
         if(weighted){
-            adjList[u].push_back(Edge(v, w));
-            adjList[v].push_back(Edge(u, w));
+            adjList[u].emplace(v, Edge(u, v, w));
+            adjList[v].emplace(u, Edge(v, u, w));
         }
         else{
-            adjList[u].push_back(Edge(v, 1));
-            adjList[v].push_back(Edge(u, 1));
+            adjList[u].emplace(v, Edge(u, v, 1));
+            adjList[v].emplace(u, Edge(v, u, 1));
         }
     }
 
@@ -41,8 +42,8 @@ namespace Graph
 
             visited[u] = true;
 
-            for (auto edge : adjList[u]) {
-                int v = edge.to;
+            for (auto &[to, edge] : adjList[u]) {
+                int v = to;
                 int weight = edge.weight;
 
                 if (!visited[v] && dist[v] > dist[u] + weight) {//relax

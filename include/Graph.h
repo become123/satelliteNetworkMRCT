@@ -1,6 +1,7 @@
 #ifndef GRAPH
 #define GRAPH
 #include <vector>
+#include <unordered_map>
 #include <queue>
 #include <utility>
 #include <limits>
@@ -10,16 +11,17 @@ namespace Graph
     // Edge class to represent edges in the graph
     class Edge {
     public:
+        int from;
         int to;
         int weight;
-        Edge(int t, int w);
+        Edge(int _from, int _to, int w);
     };
 
     // Graph class to represent the graph
     class Graph {
     private:
         int verticesCount;
-        std::vector<std::vector<Edge>> adjList;
+        std::vector<std::unordered_map<int, Edge>> adjList;
     public:
         Graph(int v);
 
