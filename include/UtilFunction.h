@@ -14,6 +14,8 @@ namespace UtilFunction
     bool isNumber(std::string str);//判斷字串是不是數字
 
     int getRandomInt(int min, int max);//取得min~max(包含)之間的隨機數
+
+    double average(const std::vector<int>& v); //計算vector<int>的平均值
 }
 
 

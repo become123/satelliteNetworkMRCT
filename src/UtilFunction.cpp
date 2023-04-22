@@ -33,5 +33,13 @@ namespace UtilFunction
         return dis(gen);
     }
 
+    double average(const std::vector<int>& v) { //計算vector<int>的平均值
+        int sum = 0;
+        for (int x : v) {
+            sum += x;
+        }
+        return static_cast<double>(sum) / v.size();
+    }
+
 
 }

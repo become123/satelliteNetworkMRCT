@@ -47,6 +47,7 @@ namespace Graph
     }
 
     std::vector<int> Graph::shortestPathTree(int src) {
+        // std::cout<<"shortestPathTree: src: "<<src<<"\n";
         std::vector<int> dist(verticesCount, std::numeric_limits<int>::max());
         std::vector<int> parent(verticesCount, -1);
         std::vector<bool> visited(verticesCount, false);
@@ -56,21 +57,42 @@ namespace Graph
         dist[src] = 0;
 
         while (!pq.empty()) {
-            int u = pq.top().second;
-            pq.pop();
-            if(visited[u]){// // pq may have duplicated element
+            std::vector<std::pair<int, int>> candidates;
+            int target = pq.top().first;
+            while (!pq.empty() && pq.top().first == target) {
+                if(!visited[pq.top().second]){ //only push the nonvisited element to candidates // pq may have duplicated element
+                    candidates.push_back(pq.top());
+                }
+                pq.pop();
+            }
+            if(candidates.size() == 0){ 
+                std::cout<<"candidates.size() == 0\n";
                 continue;
             }
+            // std::cout<<"all candidates:";
+            // for(auto i: candidates){
+            //     std::cout<<"("<<i.first<<", "<<i.second<<") ";
+            // }   
+            // std::cout<<"\n";
+            std::pair<int, int> minDistNodePair = candidates[UtilFunction::getRandomInt(0, (int)candidates.size()-1)];
+            for(auto &candidate: candidates){ //push the nonselected element back to pq 
+                if(candidate == minDistNodePair){
+                    // std::cout<<"selected: ("<<candidate.first<<", "<<candidate.second<<")\n";
+                    continue;
+                }
+                pq.push(candidate);
+            }
+            int minDistNode = minDistNodePair.second;
 
-            visited[u] = true;
+            visited[minDistNode] = true;
 
-            for (auto &[to, edge] : adjList[u]) {
+            for (auto &[to, edge] : adjList[minDistNode]) {
                 int v = to;
                 int weight = edge.weight;
 
-                if (!visited[v] && dist[v] > dist[u] + weight) {//relax
-                    dist[v] = dist[u] + weight;
-                    parent[v] = u;
+                if (!visited[v] && dist[v] > dist[minDistNode] + weight) {//relax
+                    dist[v] = dist[minDistNode] + weight;
+                    parent[v] = minDistNode;
                     // cout<<"insert (dist: "<<dist[v]<<", id: "<<v<<")\n";
                     pq.push(std::make_pair(dist[v], v));// pq may have duplicated element. better way is to use decrease key
                 }
@@ -78,7 +100,7 @@ namespace Graph
         }
         return parent;
     }
-
+    
     std::set<Edge> Graph::randomSpanningTree(){
         DisjointSet::DisjointSet dsSet(verticesCount);
         std::set<Edge> edgeCandidates(edgeSet);
