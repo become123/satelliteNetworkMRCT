@@ -6,6 +6,7 @@
 #include <utility>
 #include <limits>
 #include <set>
+#include <iostream>
 
 namespace Graph
 {
@@ -28,13 +29,15 @@ namespace Graph
     public:
         Graph(int v);
 
+        int getVerticesCount();
+
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
 
-        int getVerticesCount();
+        std::set<Edge> randomSpanningTree();
     };
 }
 

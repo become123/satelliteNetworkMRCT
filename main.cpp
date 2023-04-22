@@ -48,52 +48,47 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
 
+    std::set<Graph::Edge> rst = satelliteNetworkGraph.randomSpanningTree();
+    std::cout << "Random spanning tree:\n";
+    std::cout<<"edge count: "<<rst.size()<<"\n";
+    for (Graph::Edge e : rst) {
+        std::cout << translateTool.indexToSatId(e.from) << " " << translateTool.indexToSatId(e.to) << " " << e.weight << "\n";
+    }
+    
+    
 
-    // Find shortest path tree for each vertex
-    // for (int i = 0; i < satelliteNetworkGraph.verticesCount; i++) {
-    //     cout << "Shortest path tree for satellite " << translateTool.indexToSatId(i) << ":" << endl;
-    //     vector<int> parent = satelliteNetworkGraph.shortestPathTree(i);
 
-    //     for (int j = 0; j < satelliteNetworkGraph.verticesCount; j++) {
-    //         if (parent[j] == -1) {
-    //             continue;
-    //         }
 
-    //         cout << "Edge " << translateTool.indexToSatId(parent[j]) << " - " << translateTool.indexToSatId(j) << endl;
-    //     }
-
-    //     cout << "\n";
-    // }
 
     // Find N'
     // cout<<"--------------------------------------------------------\nN':\n";
-    std::vector<std::vector<int> > adjacencyMatrixN2(satCount, std::vector<int>(satCount,0));
-    for (int i = 0; i < satelliteNetworkGraph.getVerticesCount(); i++) {
-        std::vector<int> parent = satelliteNetworkGraph.shortestPathTree(i);
+    // std::vector<std::vector<int> > adjacencyMatrixN2(satCount, std::vector<int>(satCount,0));
+    // for (int i = 0; i < satelliteNetworkGraph.getVerticesCount(); i++) {
+    //     std::vector<int> parent = satelliteNetworkGraph.shortestPathTree(i);
 
-        for (int j = 0; j < satelliteNetworkGraph.getVerticesCount(); j++) {
-            int cur = j;
-            while(parent[cur] != -1){
-                adjacencyMatrixN2[parent[cur]][cur]++;
-                cur = parent[cur];
-            }
-        }
-    }
-    std::multimap<int, std::pair<int, int>> edgeTable;
-    for(int i = 0; i < satCount; ++i){
-        for(int j = i; j < satCount; ++j){
-            if(adjacencyMatrixN2[i][j] != 0){
-                adjacencyMatrixN2[i][j] = (adjacencyMatrixN2[i][j] + adjacencyMatrixN2[j][i])/2;
-                // cout<<translateTool.indexToSatId(i)<<"to"<<translateTool.indexToSatId(j)<<":"<<adjacencyMatrixN2[i][j]<<"\n";
-                edgeTable.emplace(adjacencyMatrixN2[i][j],std::make_pair(translateTool.indexToSatId(i), translateTool.indexToSatId(j)));
-            }
-        }
-    }
-    // cout<<"--------------------------------------------------------\nN':\n";
-    for(auto i:edgeTable){
-        // cout<<i.second.first<<"to"<<i.second.second<<":"<<i.first<<"\n";
-        std::cout<<"("<<i.second.first<<","<<i.second.second<<")\n";
-    }
+    //     for (int j = 0; j < satelliteNetworkGraph.getVerticesCount(); j++) {
+    //         int cur = j;
+    //         while(parent[cur] != -1){
+    //             adjacencyMatrixN2[parent[cur]][cur]++;
+    //             cur = parent[cur];
+    //         }
+    //     }
+    // }
+    // std::multimap<int, std::pair<int, int>> edgeTable;//(average weight, (edge from, edge to))
+    // for(int i = 0; i < satCount; ++i){
+    //     for(int j = i; j < satCount; ++j){
+    //         if(adjacencyMatrixN2[i][j] != 0){
+    //             adjacencyMatrixN2[i][j] = (adjacencyMatrixN2[i][j] + adjacencyMatrixN2[j][i])/2; // get average of the two direction of the edge
+    //             // cout<<translateTool.indexToSatId(i)<<"to"<<translateTool.indexToSatId(j)<<":"<<adjacencyMatrixN2[i][j]<<"\n";
+    //             edgeTable.emplace(adjacencyMatrixN2[i][j],std::make_pair(translateTool.indexToSatId(i), translateTool.indexToSatId(j)));
+    //         }
+    //     }
+    // }
+    // // cout<<"--------------------------------------------------------\nN':\n";
+    // for(auto i:edgeTable){
+    //     // cout<<i.second.first<<"to"<<i.second.second<<":"<<i.first<<"\n";
+    //     std::cout<<"("<<i.second.first<<","<<i.second.second<<")\n";
+    // }
 
 
 

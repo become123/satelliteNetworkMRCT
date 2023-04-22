@@ -1,4 +1,6 @@
 #include "Graph.h"
+#include "DisjointSet.h"
+#include "UtilFunction.h"
 
 namespace Graph
 {
@@ -8,8 +10,18 @@ namespace Graph
         weight = w;
     }
 
+    int Graph::getVerticesCount(){
+        return verticesCount;
+    }
+
     bool Edge::operator<(const Edge& other) const {
-        return weight < other.weight;
+        if (weight != other.weight) {
+            return weight < other.weight;
+        }
+        if (from != other.from) {
+            return from < other.from;
+        }
+        return to < other.to;
     }
 
     Graph::Graph(int v) {
@@ -22,11 +34,15 @@ namespace Graph
             adjList[u].emplace(v, Edge(u, v, w));
             adjList[v].emplace(u, Edge(v, u, w));
             edgeSet.insert(Edge(u, v, w));
+            // std::cout<<"Edge: "<<u<<" "<<v<<" "<<w;
+            // std::cout<<",size: "<<edgeSet.size()<<"\n";
         }
         else{
             adjList[u].emplace(v, Edge(u, v, 1));
             adjList[v].emplace(u, Edge(v, u, 1));
-            edgeSet.insert(Edge(u, v, w));
+            edgeSet.insert(Edge(u, v, 1));
+            // std::cout<<"Edge: "<<u<<" "<<v<<" "<<1;
+            // std::cout<<",size: "<<edgeSet.size()<<"\n";           
         }
     }
 
@@ -63,7 +79,19 @@ namespace Graph
         return parent;
     }
 
-    int Graph::getVerticesCount(){
-        return verticesCount;
+    std::set<Edge> Graph::randomSpanningTree(){
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        std::set<Edge> edgeCandidates(edgeSet);
+        std::set<Edge> rst;
+        while((int)rst.size() < verticesCount - 1){
+            int randomIndex = UtilFunction::getRandomInt(0, edgeCandidates.size() - 1);
+            auto it = std::next(edgeCandidates.begin(), randomIndex);
+            Edge edge = *it;
+            edgeCandidates.erase(it);
+            if(dsSet.Union(edge.from, edge.to)){
+                rst.insert(edge);
+            }
+        }
+        return rst;
     }
 }

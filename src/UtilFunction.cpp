@@ -25,4 +25,13 @@ namespace UtilFunction
         }
         return true;
     }
+
+    int getRandomInt(int min, int max){//取得min~max之間的隨機數
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(min, max);
+        return dis(gen);
+    }
+
+
 }
