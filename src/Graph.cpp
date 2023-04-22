@@ -8,6 +8,10 @@ namespace Graph
         weight = w;
     }
 
+    bool Edge::operator<(const Edge& other) const {
+        return weight < other.weight;
+    }
+
     Graph::Graph(int v) {
         verticesCount = v;
         adjList.resize(verticesCount);
@@ -17,10 +21,12 @@ namespace Graph
         if(weighted){
             adjList[u].emplace(v, Edge(u, v, w));
             adjList[v].emplace(u, Edge(v, u, w));
+            edgeSet.insert(Edge(u, v, w));
         }
         else{
             adjList[u].emplace(v, Edge(u, v, 1));
             adjList[v].emplace(u, Edge(v, u, 1));
+            edgeSet.insert(Edge(u, v, w));
         }
     }
 

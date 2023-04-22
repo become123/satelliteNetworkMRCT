@@ -5,6 +5,7 @@
 #include <queue>
 #include <utility>
 #include <limits>
+#include <set>
 
 namespace Graph
 {
@@ -15,6 +16,7 @@ namespace Graph
         int to;
         int weight;
         Edge(int _from, int _to, int w);
+        bool operator<(const Edge& other) const;
     };
 
     // Graph class to represent the graph
@@ -22,6 +24,7 @@ namespace Graph
     private:
         int verticesCount;
         std::vector<std::unordered_map<int, Edge>> adjList;
+        std::set<Edge> edgeSet;
     public:
         Graph(int v);
 
