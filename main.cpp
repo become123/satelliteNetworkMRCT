@@ -11,6 +11,7 @@
 #include "UtilFunction.h"
 #include "ConvertTool.h"
 #include "Graph.h"
+#include "MainFunction.h"
 
 
 const bool weighted = false;
@@ -48,25 +49,12 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
 
-    // std::set<Graph::Edge> rst = satelliteNetworkGraph.randomSpanningTree();
-    // std::cout << "Random spanning tree:\n";
-    // std::cout<<"edge count: "<<rst.size()<<"\n";
-    // for (Graph::Edge e : rst) {
-    //     std::cout << translateTool.indexToSatId(e.from) << " " << translateTool.indexToSatId(e.to) << " " << e.weight << "\n";
-    // }
-
-    std::set<Graph::Edge> mst = satelliteNetworkGraph.minimumSpanningTree();
-    std::cout << "Minimum spanning tree:\n";
-    std::cout<<"edge count: "<<mst.size()<<"\n";
-    for (Graph::Edge e : mst) {
-        std::cout << translateTool.indexToSatId(e.from) << " " << translateTool.indexToSatId(e.to) << " " << e.weight << "\n";
-    }
     
-    
+    MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
 
 
-
+ 
     // Find N'
     // std::cout<<"--------------------------------------------------------\nN':\n";
     // std::vector<std::vector<int> > adjacencyMatrixN2(satCount, std::vector<int>(satCount,0));

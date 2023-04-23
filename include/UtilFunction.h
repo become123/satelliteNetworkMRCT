@@ -4,6 +4,9 @@
 #include <string>
 #include <sstream>
 #include <random>
+#include <set>
+#include <algorithm>
+#include "Graph.h"
 
 
 
@@ -16,6 +19,8 @@ namespace UtilFunction
     int getRandomInt(int min, int max);//取得min~max(包含)之間的隨機數
 
     double average(const std::vector<int>& v); //計算vector<int>的平均值
+
+    std::set<Graph::Edge> difference(const std::set<Graph::Edge>& s1, const std::set<Graph::Edge>& s2);//計算s1-s2
 }
 
 

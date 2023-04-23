@@ -41,5 +41,10 @@ namespace UtilFunction
         return static_cast<double>(sum) / v.size();
     }
 
+    std::set<Graph::Edge> difference(const std::set<Graph::Edge>& s1, const std::set<Graph::Edge>& s2) { //計算s1-s2
+        std::set<Graph::Edge> result;
+        std::set_difference(s1.begin(), s1.end(), s2.begin(), s2.end(), std::inserter(result, result.begin()));
+        return result;
+    }
 
 }

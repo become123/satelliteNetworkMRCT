@@ -14,6 +14,10 @@ namespace Graph
         return verticesCount;
     }
 
+    std::set<Edge> Graph::getEdgeSet(){
+        return edgeSet;
+    }
+
     bool Edge::operator<(const Edge& other) const {
         if (weight != other.weight) {
             return weight < other.weight;

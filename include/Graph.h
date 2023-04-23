@@ -17,6 +17,7 @@ namespace Graph
         int to;
         int weight;
         Edge(int _from, int _to, int w);
+        Edge(const Edge& other) : from(other.from), to(other.to), weight(other.weight) {}
         bool operator<(const Edge& other) const;
     };
 
@@ -30,6 +31,8 @@ namespace Graph
         Graph(int v);
 
         int getVerticesCount();
+
+        std::set<Edge> getEdgeSet();
 
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);
