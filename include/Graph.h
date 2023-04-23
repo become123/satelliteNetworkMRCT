@@ -38,6 +38,8 @@ namespace Graph
         std::vector<int> shortestPathTree(int src);
 
         std::set<Edge> randomSpanningTree();
+
+        std::set<Edge> minimumSpanningTree();
     };
 }
 

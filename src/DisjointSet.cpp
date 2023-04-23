@@ -9,6 +9,7 @@ namespace DisjointSet
             parent[i] = i;
             size[i] = 1;
         }
+        groupCount = n;
     }
 
     int DisjointSet::find(int x) {
@@ -24,11 +25,16 @@ namespace DisjointSet
         if (rootX == rootY) {
             return false;
         }
+        groupCount--;
         if (size[rootX] < size[rootY]) {
             std::swap(rootX, rootY);
         }
         parent[rootY] = rootX;
         size[rootX] += size[rootY];
         return true;
+    }
+
+    int DisjointSet::getGroupCount() {
+        return groupCount;
     }
 }

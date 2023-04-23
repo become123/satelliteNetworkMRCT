@@ -116,4 +116,20 @@ namespace Graph
         }
         return rst;
     }
+
+    std::set<Edge> Graph::minimumSpanningTree(){
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        std::set<Edge> edgeCandidates(edgeSet);
+        std::set<Edge> mst;
+        for(auto &edge: edgeCandidates){
+            // std::cout<<"edge: "<<edge.from<<" "<<edge.to<<" "<<edge.weight<<"\n";
+            if(dsSet.Union(edge.from, edge.to)){
+                mst.insert(edge);
+            }
+            if(dsSet.getGroupCount() == 1){
+                break;
+            }
+        }
+        return mst;
+    }
 }

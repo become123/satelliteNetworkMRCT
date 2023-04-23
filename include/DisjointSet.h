@@ -8,10 +8,12 @@ namespace DisjointSet
     private:
         std::vector<int> parent;
         std::vector<int> size;
+        int groupCount;
     public:
         DisjointSet(int n);
         int find(int x);
         bool Union(int x, int y);
+        int getGroupCount();
     };
 }
 
