@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
     // MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
 
-    std::set<Graph::Edge> minimumLevelTree = satelliteNetworkGraph.minimumLevelTree(0);
-    std::cout<<"minimumLevelTree size: "<<minimumLevelTree.size()<<"\n";
+    std::set<Graph::Edge> minimumLevelTreeEdgeSet = satelliteNetworkGraph.minimumLevelTreeEdgeSet(0);
+    std::cout<<"minimumLevelTree size: "<<minimumLevelTreeEdgeSet.size()<<"\n";
 
 
 

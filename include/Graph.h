@@ -8,6 +8,7 @@
 #include <set>
 #include <iostream>
 #include <map>
+#include "Tree.h"
 
 namespace Graph
 {
@@ -41,15 +42,16 @@ namespace Graph
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
 
-        std::set<Edge> randomSpanningTree();
+        std::set<Edge> randomSpanningTreeEdgeSet();
 
-        std::set<Edge> minimumSpanningTree();
+        std::set<Edge> minimumSpanningTreeEdgeSet();
 
         std::vector<std::vector<int> > getAdjacencyMatrixN2();// Find N'
 
         Graph getNewWeighted_Graph(); //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
 
-        std::set<Edge> minimumLevelTree(int src);
+        std::set<Edge> minimumLevelTreeEdgeSet(int src);
+
     };
 }
 

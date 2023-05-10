@@ -105,7 +105,7 @@ namespace Graph
         return parent;
     }
     
-    std::set<Edge> Graph::randomSpanningTree(){
+    std::set<Edge> Graph::randomSpanningTreeEdgeSet(){
         DisjointSet::DisjointSet dsSet(verticesCount);
         std::set<Edge> edgeCandidates(edgeSet);
         std::set<Edge> rst;
@@ -121,7 +121,7 @@ namespace Graph
         return rst;
     }
 
-    std::set<Edge> Graph::minimumSpanningTree(){
+    std::set<Edge> Graph::minimumSpanningTreeEdgeSet(){
         // std::cout<<"minimumSpanningTree\n";
         DisjointSet::DisjointSet dsSet(verticesCount);
         std::set<Edge> edgeCandidates(edgeSet);
@@ -179,7 +179,7 @@ namespace Graph
         return newWeighted_Graph;  
     }
 
-    std::set<Edge> Graph::minimumLevelTree(int src){
+    std::set<Edge> Graph::minimumLevelTreeEdgeSet(int src){
         DisjointSet::DisjointSet dsSet(verticesCount);
         std::set<Edge> mlt;
         std::queue<int> q;
