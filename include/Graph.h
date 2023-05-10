@@ -7,6 +7,7 @@
 #include <limits>
 #include <set>
 #include <iostream>
+#include <map>
 
 namespace Graph
 {
@@ -43,6 +44,10 @@ namespace Graph
         std::set<Edge> randomSpanningTree();
 
         std::set<Edge> minimumSpanningTree();
+
+        std::vector<std::vector<int> > getAdjacencyMatrixN2();// Find N'
+
+        Graph getNewWeighted_Graph(); //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
     };
 }
 

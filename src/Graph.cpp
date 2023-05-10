@@ -137,4 +137,45 @@ namespace Graph
         }
         return mst;
     }
+
+    std::vector<std::vector<int> > Graph::getAdjacencyMatrixN2(){ // Find N'
+        std::vector<std::vector<int> > adjacencyMatrixN2(verticesCount, std::vector<int>(verticesCount,0));
+        for (int i = 0; i < verticesCount; i++) {
+            std::vector<int> parent = this->shortestPathTree(i);
+
+            for (int j = 0; j < verticesCount; j++) {
+                int cur = j;
+                while(parent[cur] != -1){
+                    adjacencyMatrixN2[parent[cur]][cur]++;
+                    cur = parent[cur];
+                }
+            }
+        }  
+        return adjacencyMatrixN2;      
+    }
+
+    Graph Graph::getNewWeighted_Graph(){ //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
+        std::vector<std::vector<int> > adjacencyMatrixN2 = this->getAdjacencyMatrixN2();
+        std::multimap<int, std::pair<int, int>> edgeTable;//(average weight, (edge from, edge to))
+        for(int i = 0; i < verticesCount; ++i){
+            for(int j = i; j < verticesCount; ++j){
+                if(adjacencyMatrixN2[i][j] != 0){
+                    adjacencyMatrixN2[i][j] = (adjacencyMatrixN2[i][j] + adjacencyMatrixN2[j][i])/2; // get average of the two direction of the edge
+                    // cout<<translateTool.indexToSatId(i)<<"to"<<translateTool.indexToSatId(j)<<":"<<adjacencyMatrixN2[i][j]<<"\n";
+                    edgeTable.emplace(adjacencyMatrixN2[i][j],std::make_pair(i, j));
+                }
+            }
+        }
+
+        Graph newWeighted_Graph(verticesCount);
+        for(auto i:edgeTable){
+            // cout<<i.second.first<<"to"<<i.second.second<<":"<<i.first<<"\n";
+            // std::cout<<"("<<i.second.first<<","<<i.second.second<<")"<<"weight:"<<i.first<<"\n";
+            newWeighted_Graph.addEdge(i.second.first, 
+                                                       i.second.second, 
+                                                       i.first, 
+                                                        true);
+        }      
+        return newWeighted_Graph;  
+    }
 }
