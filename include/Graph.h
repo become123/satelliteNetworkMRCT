@@ -52,6 +52,7 @@ namespace Graph
 
         std::set<Edge> minimumLevelTreeEdgeSet(int src);
 
+        Tree::Tree minimumLevelTree(int src);
     };
 }
 

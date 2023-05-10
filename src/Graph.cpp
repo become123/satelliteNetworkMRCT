@@ -195,5 +195,28 @@ namespace Graph
             }
         }
         return mlt;
-    }    
+    }  
+
+    Tree::Tree Graph::minimumLevelTree(int src){
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        Tree::Tree mlt = Tree::Tree(src, verticesCount);
+        std::queue<int> q;
+        q.push(src);
+        int level = 0;
+        while(!q.empty()){
+            int levelSize = q.size();
+            while(levelSize--){
+                int u = q.front();
+                q.pop();
+                for(auto &[v, edge]: adjList[u]){
+                    if(dsSet.Union(u, v)){
+                        mlt.addEdge(u, v);
+                        q.push(v);
+                    }
+                }
+            }
+        }
+        return mlt;
+    }
+
 }
