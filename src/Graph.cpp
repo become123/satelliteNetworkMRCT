@@ -178,4 +178,22 @@ namespace Graph
         }      
         return newWeighted_Graph;  
     }
+
+    std::set<Edge> Graph::minimumLevelTree(int src){
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        std::set<Edge> mlt;
+        std::queue<int> q;
+        q.push(src);
+        while(!q.empty()){
+            int u = q.front();
+            q.pop();
+            for(auto &[v, edge]: adjList[u]){
+                if(dsSet.Union(u, v)){
+                    mlt.insert(edge);
+                    q.push(v);
+                }
+            }
+        }
+        return mlt;
+    }    
 }

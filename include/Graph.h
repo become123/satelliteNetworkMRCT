@@ -48,6 +48,8 @@ namespace Graph
         std::vector<std::vector<int> > getAdjacencyMatrixN2();// Find N'
 
         Graph getNewWeighted_Graph(); //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
+
+        std::set<Edge> minimumLevelTree(int src);
     };
 }
 
