@@ -22,6 +22,9 @@ namespace Tree
     public:
         Tree(int rootId, int size);
         ~Tree();
+        TreeNode* getRoot();
+        TreeNode* getNode(int id);
+        void addEdge(int u, int v);
     };
 }
 
