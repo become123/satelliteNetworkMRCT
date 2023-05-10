@@ -10,4 +10,10 @@ namespace Tree
         }
         root = nodes[rootId];
     }
+
+    Tree::~Tree(){
+        for(int i = 0; i < size; ++i){
+            delete nodes[i];
+        }
+    }
 }

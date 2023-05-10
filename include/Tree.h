@@ -21,6 +21,7 @@ namespace Tree
         int size;
     public:
         Tree(int rootId, int size);
+        ~Tree();
     };
 }
 
