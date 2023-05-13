@@ -202,7 +202,6 @@ namespace Graph
         Tree::Tree mlt = Tree::Tree(src, verticesCount);
         std::queue<int> q;
         q.push(src);
-        int level = 0;
         while(!q.empty()){
             int levelSize = q.size();
             while(levelSize--){

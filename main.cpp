@@ -12,6 +12,7 @@
 #include "ConvertTool.h"
 #include "Graph.h"
 #include "MainFunction.h"
+#include "Tree.h"
 
 
 const bool weighted = false;
@@ -52,8 +53,8 @@ int main(int argc, char *argv[]) {
     // MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
 
-    std::set<Graph::Edge> minimumLevelTreeEdgeSet = satelliteNetworkGraph.minimumLevelTreeEdgeSet(0);
-    std::cout<<"minimumLevelTree size: "<<minimumLevelTreeEdgeSet.size()<<"\n";
+    Tree::Tree mlt = satelliteNetworkGraph.minimumLevelTree(translateTool.satIdToIndex(403));
+    mlt.levelOrderTraversal(translateTool);
 
 
 

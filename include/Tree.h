@@ -1,6 +1,9 @@
 #ifndef TREE
 #define TREE
 #include <vector>
+#include <queue>
+#include <iostream>
+#include "ConvertTool.h"
 
 namespace Tree
 {
@@ -25,6 +28,7 @@ namespace Tree
         TreeNode* getRoot();
         TreeNode* getNode(int id);
         void addEdge(int u, int v);
+        void levelOrderTraversal(ConvertTool::satIdConversion &translateTool);
     };
 }
 
