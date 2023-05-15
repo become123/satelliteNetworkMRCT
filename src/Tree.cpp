@@ -25,9 +25,11 @@ namespace Tree
         return nodes[id];
     }
 
-    void Tree::addEdge(int u, int v){
-        nodes[u]->children.push_back(nodes[v]);
-        nodes[v]->parent = nodes[u];
+    void Tree::addEdge(int p, int v){ //add edge from p to v
+        nodes[p]->children.push_back(nodes[v]);
+        nodes[p]->degree++;
+        nodes[v]->parent = nodes[p];
+        nodes[v]->degree++;
     }
 
     void Tree::levelOrderTraversal(ConvertTool::satIdConversion &translateTool){ //print level order traversal of the tree
@@ -45,7 +47,7 @@ namespace Tree
                     std::cout<<"level error\n";
                     exit(-1);
                 }                
-                std::cout<<translateTool.indexToSatId(cur->id)<<", subtreeSize:"<<cur->subtreeSize<<", children:(";
+                std::cout<<translateTool.indexToSatId(cur->id)<<", subtreeSize:"<<cur->subtreeSize<<", degree:"<<cur->degree<<", children:(";
                 for(auto child : cur->children){
                     std::cout<<" "<<translateTool.indexToSatId(child->id);
                     q.push(child);

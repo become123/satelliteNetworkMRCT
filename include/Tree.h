@@ -11,11 +11,12 @@ namespace Tree
     public:
         int id;
         int level;
+        int degree;
         int subtreeSize;
         TreeNode* parent;
         std::vector<TreeNode*> children;
 
-        TreeNode(int x) : id(x), level(-1), subtreeSize(-1), parent(nullptr) {}
+        TreeNode(int x) : id(x), level(-1),degree(0), subtreeSize(-1), parent(nullptr) {}
     };
 
     class Tree{
@@ -29,7 +30,7 @@ namespace Tree
         ~Tree();
         TreeNode* getRoot();
         TreeNode* getNode(int id);
-        void addEdge(int u, int v);
+        void addEdge(int p, int v); //add edge from p to v
         void levelOrderTraversal(ConvertTool::satIdConversion &translateTool); //print level order traversal of the tree
         void buildLevelAndSubtreeSize();
     };
