@@ -50,9 +50,11 @@ namespace Graph
 
         Graph getNewWeighted_Graph(); //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
 
-        std::set<Edge> minimumLevelTreeEdgeSet(int src);
+        std::set<Edge> minimumLevelTreeEdgeSet(int src); //BFS建出minimumLevelTree
 
-        Tree::Tree minimumLevelTree(int src);
+        Tree::Tree minimumLevelTree(int src); //BFS建出minimumLevelTree
+
+        Tree::Tree degreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
     };
 }
 

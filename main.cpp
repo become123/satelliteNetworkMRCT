@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     // MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
 
-    Tree::Tree mlt = satelliteNetworkGraph.minimumLevelTree(translateTool.satIdToIndex(403));
+    Tree::Tree mlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(403), 3);
     mlt.buildLevelAndSubtreeSize();
     mlt.levelOrderTraversal(translateTool);
 

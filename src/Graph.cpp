@@ -172,14 +172,14 @@ namespace Graph
             // cout<<i.second.first<<"to"<<i.second.second<<":"<<i.first<<"\n";
             // std::cout<<"("<<i.second.first<<","<<i.second.second<<")"<<"weight:"<<i.first<<"\n";
             newWeighted_Graph.addEdge(i.second.first, 
-                                                       i.second.second, 
-                                                       i.first, 
-                                                        true);
+                                      i.second.second, 
+                                      i.first, 
+                                      true);
         }      
         return newWeighted_Graph;  
     }
 
-    std::set<Edge> Graph::minimumLevelTreeEdgeSet(int src){
+    std::set<Edge> Graph::minimumLevelTreeEdgeSet(int src){ //BFS建出minimumLevelTree
         DisjointSet::DisjointSet dsSet(verticesCount);
         std::set<Edge> mlt;
         std::queue<int> q;
@@ -197,7 +197,7 @@ namespace Graph
         return mlt;
     }  
 
-    Tree::Tree Graph::minimumLevelTree(int src){
+    Tree::Tree Graph::minimumLevelTree(int src){ //BFS建出minimumLevelTree
         DisjointSet::DisjointSet dsSet(verticesCount);
         Tree::Tree mlt = Tree::Tree(src, verticesCount);
         std::queue<int> q;
@@ -217,5 +217,26 @@ namespace Graph
         }
         return mlt;
     }
+
+    Tree::Tree Graph::degreeConstrainedMinimumLevelTree(int src, int degreeConstraint){ //BFS建出minimumLevelTree，限制每個node的最大degree
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        Tree::Tree mlt = Tree::Tree(src, verticesCount);
+        std::queue<int> q;
+        q.push(src);
+        while(!q.empty()){
+            int levelSize = q.size();
+            while(levelSize--){
+                int u = q.front();
+                q.pop();
+                for(auto &[v, edge]: adjList[u]){
+                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                        mlt.addEdge(u, v);
+                        q.push(v);
+                    }
+                }
+            }
+        }
+        return mlt;
+    }    
 
 }
