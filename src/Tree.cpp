@@ -30,7 +30,7 @@ namespace Tree
         nodes[v]->parent = nodes[u];
     }
 
-    void Tree::levelOrderTraversal(ConvertTool::satIdConversion &translateTool){
+    void Tree::levelOrderTraversal(ConvertTool::satIdConversion &translateTool){ //print level order traversal of the tree
         std::queue<TreeNode*> q;
         q.push(root);
         int level = 0;
@@ -41,14 +41,40 @@ namespace Tree
                 TreeNode* cur = q.front();
                 q.pop();
                 // std::cout<<translateTool.indexToSatId(cur->id)<<", ";
-                std::cout<<translateTool.indexToSatId(cur->id)<<":(";
+                if(cur->level != level-1){
+                    std::cout<<"level error\n";
+                    exit(-1);
+                }                
+                std::cout<<translateTool.indexToSatId(cur->id)<<", subtreeSize:"<<cur->subtreeSize<<", children:(";
                 for(auto child : cur->children){
                     std::cout<<" "<<translateTool.indexToSatId(child->id);
                     q.push(child);
                 }
-                std::cout<<"), ";
+                std::cout<<")\n";
             }
             std::cout<<"\n";
         }
+    }
+
+    void Tree::buildLevelAndSubtreeSize(TreeNode* root){
+        if(root == nullptr){
+            std::cout<<"root is nullptr\n";
+            return;
+        }
+        if(root->parent == nullptr){
+            root->level = 0;
+        }
+        else{
+            root->level = root->parent->level + 1;
+        }
+        root->subtreeSize = 1;
+        for(auto child : root->children){
+            buildLevelAndSubtreeSize(child);
+            root->subtreeSize += child->subtreeSize;
+        }
+    }
+
+    void Tree::buildLevelAndSubtreeSize(){
+        this->buildLevelAndSubtreeSize(root);
     }
 }

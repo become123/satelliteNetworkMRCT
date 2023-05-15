@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
 
 
     Tree::Tree mlt = satelliteNetworkGraph.minimumLevelTree(translateTool.satIdToIndex(403));
+    mlt.buildLevelAndSubtreeSize();
     mlt.levelOrderTraversal(translateTool);
 
 
