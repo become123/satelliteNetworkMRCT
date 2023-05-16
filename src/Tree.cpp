@@ -1,4 +1,5 @@
 #include "Tree.h"
+#include "Graph.h"
 
 namespace Tree
 {
@@ -9,6 +10,59 @@ namespace Tree
             nodes[i] = new TreeNode(i);
         }
         root = nodes[rootId];
+    }
+
+    Tree::Tree(std::set<Graph::Edge> edgeSet){
+        this->size = edgeSet.size()+1;
+        nodes.resize(size);
+        for(int i = 0; i < size; ++i){
+            nodes[i] = new TreeNode(i);
+        }
+
+        std::vector<std::vector<int>> adjList(size); //find center of the tree to be the root(using topology sort)
+        std::vector<int> degree(size, 0);
+        for(auto edge: edgeSet){
+            adjList[edge.from].push_back(edge.to);
+            adjList[edge.to].push_back(edge.from);
+            degree[edge.from]++;
+            degree[edge.to]++;
+        }
+        std::queue<int> q;
+        std::vector<bool> added(size, false);
+        for(int i = 0; i < size; ++i){
+            if(degree[i] == 1){ //leaf node
+                q.push(i);
+            }
+        }
+        int cur = q.front();
+        int cnt = 0;
+        while(!q.empty()){
+            int qSize = q.size();
+            std::cout<<"qSize is "<<qSize<<"\n";
+            while(qSize--){
+                cur = q.front();
+                q.pop();
+                for(auto v: adjList[cur]){
+                    if(added[v] == false){ 
+                        // std::cout<<"parent: "<<v<<", child: "<<cur<<"\n";
+                        addEdge(v, cur);
+                        cnt++;
+                        added[cur] = true; // prevent adding edge in parent->child direction
+                    }
+                    if(--degree[v] == 1){
+                        q.push(v);
+                    }
+                }
+            }
+            // std::cout<<"---------------------------------------------\n";
+        }
+        // std::cout<<"cnt is "<<cnt<<"\n";
+        if(cnt != size-1){
+            std::cout<<"cnt != size-1\n";
+            exit(-1);
+        }
+        root = nodes[cur];
+        // std::cout<<"root is "<<root->id<<"\n";
     }
 
     Tree::~Tree(){
@@ -25,7 +79,7 @@ namespace Tree
         return nodes[id];
     }
 
-    void Tree::addEdge(int p, int v){ //add edge from p to v
+    void Tree::addEdge(int p, int v){ //add edge from p to v, p is parent, v is child
         nodes[p]->children.push_back(nodes[v]);
         nodes[p]->degree++;
         nodes[v]->parent = nodes[p];

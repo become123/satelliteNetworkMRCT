@@ -3,7 +3,11 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <set>
 #include "ConvertTool.h"
+namespace Graph{
+    class Edge;
+}
 
 namespace Tree
 {
@@ -27,10 +31,11 @@ namespace Tree
         void buildLevelAndSubtreeSize(TreeNode* root);
     public:
         Tree(int rootId, int size);
+        Tree(std::set<Graph::Edge> edgeSet);
         ~Tree();
         TreeNode* getRoot();
         TreeNode* getNode(int id);
-        void addEdge(int p, int v); //add edge from p to v
+        void addEdge(int p, int v); //add edge from p to v, p is parent, v is child
         void levelOrderTraversal(ConvertTool::satIdConversion &translateTool); //print level order traversal of the tree
         void buildLevelAndSubtreeSize();
     };
