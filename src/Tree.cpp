@@ -18,8 +18,8 @@ namespace Tree
         for(int i = 0; i < size; ++i){
             nodes[i] = new TreeNode(i);
         }
-
-        std::vector<std::vector<int>> adjList(size); //find center of the tree to be the root(using topology sort)
+        //find center of the tree to be the root(using topology sort)
+        std::vector<std::vector<int>> adjList(size); 
         std::vector<int> degree(size, 0);
         for(auto edge: edgeSet){
             adjList[edge.from].push_back(edge.to);
@@ -38,7 +38,7 @@ namespace Tree
         int cnt = 0;
         while(!q.empty()){
             int qSize = q.size();
-            std::cout<<"qSize is "<<qSize<<"\n";
+            // std::cout<<"qSize is "<<qSize<<"\n";
             while(qSize--){
                 cur = q.front();
                 q.pop();
@@ -77,6 +77,16 @@ namespace Tree
 
     TreeNode* Tree::getNode(int id){
         return nodes[id];
+    }
+
+    std::set<Graph::Edge> Tree::getEdgeSet(){
+        std::set<Graph::Edge> edgeSet;
+        for(int i = 0; i < size; ++i){
+            for(auto child: nodes[i]->children){
+                edgeSet.insert(Graph::Edge(i, child->id, 1));
+            }
+        }
+        return edgeSet;
     }
 
     void Tree::addEdge(int p, int v){ //add edge from p to v, p is parent, v is child

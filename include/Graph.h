@@ -21,6 +21,7 @@ namespace Graph
         Edge(int _from, int _to, int w);
         Edge(const Edge& other) : from(other.from), to(other.to), weight(other.weight) {}
         bool operator<(const Edge& other) const;
+        bool operator==(const Edge& other) const;
     };
 
     // Graph class to represent the graph

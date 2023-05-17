@@ -28,6 +28,10 @@ namespace Graph
         return to < other.to;
     }
 
+    bool Edge::operator==(const Edge& other) const {
+        return weight == other.weight && from == other.from && to == other.to;
+    }    
+
     Graph::Graph(int v) {
         verticesCount = v;
         adjList.resize(verticesCount);
