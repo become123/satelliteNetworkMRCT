@@ -45,6 +45,8 @@ namespace Graph
 
         std::set<Edge> randomSpanningTreeEdgeSet();
 
+        std::set<Edge> degreeConstrainedRandomSpanningTreeEdgeSet(int degreeConstraint);
+
         std::set<Edge> minimumSpanningTreeEdgeSet();
 
         std::vector<std::vector<int> > getAdjacencyMatrixN2();// Find N'

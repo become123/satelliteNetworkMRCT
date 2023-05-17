@@ -125,6 +125,26 @@ namespace Graph
         return rst;
     }
 
+    std::set<Edge> Graph::degreeConstrainedRandomSpanningTreeEdgeSet(int degreeConstraint){
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        std::set<Edge> edgeCandidates(edgeSet);
+        std::vector<int> degree(verticesCount, 0);
+        std::set<Edge> rst;
+        while((int)rst.size() < verticesCount - 1){
+            int randomIndex = UtilFunction::getRandomInt(0, edgeCandidates.size() - 1);
+            auto it = std::next(edgeCandidates.begin(), randomIndex);
+            Edge edge = *it;
+            edgeCandidates.erase(it);
+            if(degree[edge.from] < degreeConstraint && degree[edge.to] < degreeConstraint && dsSet.Union(edge.from, edge.to)){
+                rst.insert(edge);
+                degree[edge.from]++;
+                degree[edge.to]++;
+            }
+        }
+        return rst;
+    }    
+
+
     std::set<Edge> Graph::minimumSpanningTreeEdgeSet(){
         // std::cout<<"minimumSpanningTree\n";
         DisjointSet::DisjointSet dsSet(verticesCount);

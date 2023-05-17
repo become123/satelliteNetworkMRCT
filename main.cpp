@@ -53,14 +53,10 @@ int main(int argc, char *argv[]) {
     // MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
 
-    Tree::Tree mlt = satelliteNetworkGraph.minimumLevelTree(translateTool.satIdToIndex(101));
-    std::set<Graph::Edge> edgeSet = mlt.getEdgeSet();
-    std::set<Graph::Edge> edgeSet2 = satelliteNetworkGraph.minimumLevelTreeEdgeSet(translateTool.satIdToIndex(101));
-    Tree::Tree mlt2(edgeSet2);
-    std::set<Graph::Edge> edgeSet3 = mlt2.getEdgeSet();
-    if(edgeSet == edgeSet2 && edgeSet2 == edgeSet3){
-        std::cout<<"same!!\n";
-    }
+    Tree::Tree mlt(satelliteNetworkGraph.degreeConstrainedRandomSpanningTreeEdgeSet(3));
+    mlt.buildLevelAndSubtreeSize();
+    mlt.levelOrderTraversal(translateTool);
+    
 
 
 
