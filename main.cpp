@@ -51,9 +51,22 @@ int main(int argc, char *argv[]) {
     }
     
     
-    std::set<Graph::Edge> mltEdgeSet = satelliteNetworkGraph.minimumLevelTreeEdgeSet(translateTool.satIdToIndex(101));
-    Graph::Graph treeGraph(satelliteNetworkGraph.getVerticesCount(), mltEdgeSet);
-    std::cout<<"AverageShortestPathLength of minimumLevel tree: "<<treeGraph.getAverageShortestPathLength()<<"\n";
+    std::vector<int> allSatId = translateTool.allSatId();
+    // for(auto satId: allSatId){
+    //     Graph::Graph mltGraph(satelliteNetworkGraph.getVerticesCount(),satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3).getEdgeSet());
+    //     std::cout<<"degree constrained minimum level tree of satellite "<<satId<<" average shortest path length:";
+    //     std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
+    //     std::cout<<", maximum shortest path length:";
+    //     std::cout<<mltGraph.getMaximumShortestPathLength()<<"\n";
+    // }
+
+    for(size_t i = 0; i < allSatId.size(); ++i){
+        Graph::Graph rstGraph(satelliteNetworkGraph.getVerticesCount(),satelliteNetworkGraph.degreeConstrainedRandomSpanningTreeEdgeSet(3));
+        std::cout<<"degree constrained random spanning tree of satellite average shortest path length:";
+        std::cout<<std::fixed<<std::setprecision(3)<<rstGraph.getAverageShortestPathLength();
+        std::cout<<", maximum shortest path length:";
+        std::cout<<rstGraph.getMaximumShortestPathLength()<<"\n";        
+    }
 
 
     

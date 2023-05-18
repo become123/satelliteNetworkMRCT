@@ -31,6 +31,8 @@ namespace Graph
         int verticesCount;
         std::vector<std::unordered_map<int, Edge>> adjList;
         std::set<Edge> edgeSet;
+        double averageShortestPathLength = -1;
+        int maximumShortestPathLength = -1;
     public:
         Graph(int v);
 
@@ -44,6 +46,8 @@ namespace Graph
         void addEdge(int u, int v, int w, bool weighted);
 
         double getAverageShortestPathLength();
+
+        int getMaximumShortestPathLength();
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);

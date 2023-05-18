@@ -35,6 +35,8 @@ namespace Graph
     Graph::Graph(int v) {
         verticesCount = v;
         adjList.resize(verticesCount);
+        averageShortestPathLength = -1;
+        maximumShortestPathLength = -1;
     }
 
     Graph::Graph(int _verticesCount, std::set<Edge> _edgeSet) {
@@ -45,6 +47,8 @@ namespace Graph
             adjList[edge.vertex2()].emplace(edge.vertex1(), edge);
         }
         this->edgeSet = _edgeSet;
+        averageShortestPathLength = -1;
+        maximumShortestPathLength = -1;
     }
 
     void Graph::addEdge(int u, int v, int w, bool weighted) {
@@ -65,7 +69,11 @@ namespace Graph
     }
 
     double Graph::getAverageShortestPathLength(){
-        double averageShortestPathLength = 0;
+        if(averageShortestPathLength > 0){
+            return averageShortestPathLength;
+        }
+        double _averageShortestPathLength = 0;
+        int _maximumShortestPathLength = 0;
         std::vector<std::vector<int>> ajacencyMatrix(verticesCount, std::vector<int>(verticesCount,std::numeric_limits<int>::max()));
         for(int i = 0; i < verticesCount; i++){
             ajacencyMatrix[i][i] = 0;
@@ -87,12 +95,51 @@ namespace Graph
         for(int i = 0; i < verticesCount; i++){
             for(int j = 0; j < verticesCount; j++){
                 if(ajacencyMatrix[i][j] != std::numeric_limits<int>::max()){
-                    averageShortestPathLength += ajacencyMatrix[i][j];
+                    _averageShortestPathLength += ajacencyMatrix[i][j];
+                    _maximumShortestPathLength = std::max(_maximumShortestPathLength, ajacencyMatrix[i][j]);
                 }
             }
         }
-        averageShortestPathLength /= (verticesCount * verticesCount) ;
-        return averageShortestPathLength;
+        _averageShortestPathLength /= (verticesCount * verticesCount) ;
+        maximumShortestPathLength = _maximumShortestPathLength;
+        return averageShortestPathLength = _averageShortestPathLength;
+    }
+
+    int Graph::getMaximumShortestPathLength(){
+        if(maximumShortestPathLength > 0){
+            return maximumShortestPathLength;
+        }
+        double _averageShortestPathLength = 0;
+        int _maximumShortestPathLength = 0;
+        std::vector<std::vector<int>> ajacencyMatrix(verticesCount, std::vector<int>(verticesCount,std::numeric_limits<int>::max()));
+        for(int i = 0; i < verticesCount; i++){
+            ajacencyMatrix[i][i] = 0;
+            for(auto edge : adjList[i]){
+                ajacencyMatrix[i][edge.first] = edge.second.weight;
+                ajacencyMatrix[edge.first][i] = edge.second.weight;
+            }
+        }
+        //Floyd Warshall Algorithm
+        for(int k = 0; k < verticesCount; k++){
+            for(int i = 0; i < verticesCount; i++){
+                for(int j = 0; j < verticesCount; j++){
+                    if(ajacencyMatrix[i][k] != std::numeric_limits<int>::max() && ajacencyMatrix[k][j] != std::numeric_limits<int>::max()){
+                        ajacencyMatrix[i][j] = std::min(ajacencyMatrix[i][j], ajacencyMatrix[i][k] + ajacencyMatrix[k][j]);
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < verticesCount; i++){
+            for(int j = 0; j < verticesCount; j++){
+                if(ajacencyMatrix[i][j] != std::numeric_limits<int>::max()){
+                    _averageShortestPathLength += ajacencyMatrix[i][j];
+                    _maximumShortestPathLength = std::max(_maximumShortestPathLength, ajacencyMatrix[i][j]);
+                }
+            }
+        }
+        _averageShortestPathLength /= (verticesCount * verticesCount) ;
+        averageShortestPathLength = _averageShortestPathLength;
+        return maximumShortestPathLength = _maximumShortestPathLength;
     }
 
     std::vector<int> Graph::shortestPathTree(int src) {
