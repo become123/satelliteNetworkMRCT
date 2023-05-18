@@ -1,6 +1,8 @@
 #ifndef CONVERT
 #define CONVERT
 #include <unordered_map>
+#include <vector>
+#include <algorithm>
 
 namespace ConvertTool
 {
@@ -19,6 +21,8 @@ namespace ConvertTool
         int satIdToIndex(int x);
 
         int indexToSatId(int x);
+
+        std::vector<int> allSatId();
     };
 }
 

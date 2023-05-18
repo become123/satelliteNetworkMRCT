@@ -25,4 +25,12 @@ namespace ConvertTool
         return indexToSatTable[x];
     }
     
+    std::vector<int> satIdConversion::allSatId(){
+        std::vector<int> allSatId;
+        for(auto [satId, index]: satIdToIndexTable){
+            allSatId.push_back(satId);
+        }
+        sort(allSatId.begin(), allSatId.end());
+        return allSatId;
+    }
 }
