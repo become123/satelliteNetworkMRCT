@@ -50,12 +50,8 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
 
-    // MainFunction::getRandomSpanningTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool);
 
-
-    Tree::Tree mlt(satelliteNetworkGraph.degreeConstrainedRandomSpanningTreeEdgeSet(3));
-    mlt.buildLevelAndSubtreeSize();
-    mlt.levelOrderTraversal(translateTool);
+    MainFunction::getdegreeConstrainedMinimumLevelTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool, 101, 3);
     
 
 
