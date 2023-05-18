@@ -4,9 +4,8 @@
 
 namespace Graph
 {
-    Edge:: Edge(int _from, int _to, int w) {
-        from = _from;
-        to = _to;
+    Edge:: Edge(int vertex1, int vertex2, int w) {
+        verticeSet = std::set<int>{vertex1, vertex2};
         weight = w;
     }
 
@@ -19,17 +18,18 @@ namespace Graph
     }
 
     bool Edge::operator<(const Edge& other) const {
-        if (weight != other.weight) {
-            return weight < other.weight;
-        }
-        if (from != other.from) {
-            return from < other.from;
-        }
-        return to < other.to;
+        // Compare the vertex sets lexicographically
+        if (verticeSet < other.verticeSet)
+            return true;
+        else if (verticeSet > other.verticeSet)
+            return false;
+
+        // If the vertex sets are the same, compare the weights
+        return weight < other.weight;
     }
 
     bool Edge::operator==(const Edge& other) const {
-        return weight == other.weight && from == other.from && to == other.to;
+        return weight == other.weight && verticeSet == other.verticeSet;
     }    
 
     Graph::Graph(int v) {
@@ -118,7 +118,7 @@ namespace Graph
             auto it = std::next(edgeCandidates.begin(), randomIndex);
             Edge edge = *it;
             edgeCandidates.erase(it);
-            if(dsSet.Union(edge.from, edge.to)){
+            if(dsSet.Union(edge.vertex1(), edge.vertex2())){
                 rst.insert(edge);
             }
         }
@@ -135,10 +135,10 @@ namespace Graph
             auto it = std::next(edgeCandidates.begin(), randomIndex);
             Edge edge = *it;
             edgeCandidates.erase(it);
-            if(degree[edge.from] < degreeConstraint && degree[edge.to] < degreeConstraint && dsSet.Union(edge.from, edge.to)){
+            if(degree[edge.vertex1()] < degreeConstraint && degree[edge.vertex2()] < degreeConstraint && dsSet.Union(edge.vertex1(), edge.vertex2())){
                 rst.insert(edge);
-                degree[edge.from]++;
-                degree[edge.to]++;
+                degree[edge.vertex1()]++;
+                degree[edge.vertex2()]++;
             }
         }
         return rst;
@@ -151,8 +151,8 @@ namespace Graph
         std::set<Edge> edgeCandidates(edgeSet);
         std::set<Edge> mst;
         for(auto &edge: edgeCandidates){
-            if(dsSet.Union(edge.from, edge.to)){
-                // std::cout<<"edge: "<<edge.from<<" "<<edge.to<<" "<<edge.weight<<"\n";
+            if(dsSet.Union(edge.vertex1(), edge.vertex2())){
+                // std::cout<<"edge: "<<edge.vertex1()<<" "<<edge.vertex2()<<" "<<edge.weight<<"\n";
                 mst.insert(edge);
             }
             if(dsSet.getGroupCount() == 1){
@@ -180,7 +180,7 @@ namespace Graph
 
     Graph Graph::getNewWeighted_Graph(){ //回傳的graph針對當前graph的N'，edge weight是兩個方向的平均
         std::vector<std::vector<int> > adjacencyMatrixN2 = this->getAdjacencyMatrixN2();
-        std::multimap<int, std::pair<int, int>> edgeTable;//(average weight, (edge from, edge to))
+        std::multimap<int, std::pair<int, int>> edgeTable;//(average weight, (edge vertex1, edge vertex2))
         for(int i = 0; i < verticesCount; ++i){
             for(int j = i; j < verticesCount; ++j){
                 if(adjacencyMatrixN2[i][j] != 0){

@@ -22,10 +22,10 @@ namespace Tree
         std::vector<std::vector<int>> adjList(size); 
         std::vector<int> degree(size, 0);
         for(auto edge: edgeSet){
-            adjList[edge.from].push_back(edge.to);
-            adjList[edge.to].push_back(edge.from);
-            degree[edge.from]++;
-            degree[edge.to]++;
+            adjList[edge.vertex1()].push_back(edge.vertex2());
+            adjList[edge.vertex2()].push_back(edge.vertex1());
+            degree[edge.vertex1()]++;
+            degree[edge.vertex2()]++;
         }
         std::queue<int> q;
         std::vector<bool> added(size, false);

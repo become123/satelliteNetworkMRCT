@@ -6,7 +6,7 @@ namespace MainFunction
         std::set<Graph::Edge> rst = satelliteNetworkGraph.randomSpanningTreeEdgeSet();
         std::set<Graph::Edge> notSelectedEdges = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), rst);
         for(Graph::Edge e : notSelectedEdges){
-            std::cout<<"("<<translateTool.indexToSatId(e.from)<<","<<translateTool.indexToSatId(e.to)<<")\n";
+            std::cout<<"("<<translateTool.indexToSatId(e.vertex1())<<","<<translateTool.indexToSatId(e.vertex2())<<")\n";
         }       
     }
 
@@ -14,7 +14,7 @@ namespace MainFunction
         std::set<Graph::Edge> mst = satelliteNetworkGraph.minimumSpanningTreeEdgeSet();
         std::set<Graph::Edge> notSelectedEdges = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), mst);
         for(Graph::Edge e : notSelectedEdges){
-            std::cout<<"("<<translateTool.indexToSatId(e.from)<<","<<translateTool.indexToSatId(e.to)<<")\n";
+            std::cout<<"("<<translateTool.indexToSatId(e.vertex1())<<","<<translateTool.indexToSatId(e.vertex2())<<")\n";
         }       
     }
 }
