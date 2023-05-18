@@ -49,9 +49,13 @@ int main(int argc, char *argv[]) {
                                       stoi(satRelation[2]), 
                                       weighted);
     }
+    
+    
+    std::set<Graph::Edge> mltEdgeSet = satelliteNetworkGraph.minimumLevelTreeEdgeSet(translateTool.satIdToIndex(101));
+    Graph::Graph treeGraph(satelliteNetworkGraph.getVerticesCount(), mltEdgeSet);
+    std::cout<<"AverageShortestPathLength of minimumLevel tree: "<<treeGraph.getAverageShortestPathLength()<<"\n";
 
 
-    MainFunction::getdegreeConstrainedMinimumLevelTree_and_PrintDeletedEdge(satelliteNetworkGraph, translateTool, 101, 3);
     
 
 

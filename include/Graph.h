@@ -34,12 +34,16 @@ namespace Graph
     public:
         Graph(int v);
 
+        Graph(int _verticesCount, std::set<Edge> _edgeSet);
+
         int getVerticesCount();
 
         std::set<Edge> getEdgeSet();
 
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);
+
+        double getAverageShortestPathLength();
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
