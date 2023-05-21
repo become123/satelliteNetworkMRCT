@@ -46,9 +46,9 @@ namespace MainFunction
             std::cout<<"degree constrained minimum level tree of satellite "<<satId<<" average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
             std::cout<<", maximum shortest path length:";
-            std::cout<<mltGraph.getMaximumShortestPathLength()<<"\n";
+            std::cout<<mltGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
-            maximumShortestPathLength.push_back(mltGraph.getMaximumShortestPathLength());
+            maximumShortestPathLength.push_back(mltGraph.getDiameter());
         }    
         std::cout<<"------------------------------------------------------------\n";
         std::cout<<"average average shortest path length:";
@@ -67,9 +67,9 @@ namespace MainFunction
             std::cout<<"degree constrained random spanning tree average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<rstGraph.getAverageShortestPathLength();
             std::cout<<", maximum shortest path length:";
-            std::cout<<rstGraph.getMaximumShortestPathLength()<<"\n";
+            std::cout<<rstGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(rstGraph.getAverageShortestPathLength());
-            maximumShortestPathLength.push_back(rstGraph.getMaximumShortestPathLength());       
+            maximumShortestPathLength.push_back(rstGraph.getDiameter());       
         } 
         std::cout<<"------------------------------------------------------------\n";
         std::cout<<"average average shortest path length:";

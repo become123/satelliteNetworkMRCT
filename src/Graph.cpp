@@ -13,6 +13,10 @@ namespace Graph
         return verticesCount;
     }
 
+    int Graph::getEdgesCount(){
+        return edgeSet.size();
+    }
+
     std::set<Edge> Graph::getEdgeSet(){
         return edgeSet;
     }
@@ -36,7 +40,7 @@ namespace Graph
         verticesCount = v;
         adjList.resize(verticesCount);
         averageShortestPathLength = -1;
-        maximumShortestPathLength = -1;
+        diameter = -1;
     }
 
     Graph::Graph(int _verticesCount, std::set<Edge> _edgeSet) {
@@ -48,7 +52,7 @@ namespace Graph
         }
         this->edgeSet = _edgeSet;
         averageShortestPathLength = -1;
-        maximumShortestPathLength = -1;
+        diameter = -1;
     }
 
     void Graph::addEdge(int u, int v, int w, bool weighted) {
@@ -66,6 +70,7 @@ namespace Graph
             // std::cout<<"Edge: "<<u<<" "<<v<<" "<<1;
             // std::cout<<",size: "<<edgeSet.size()<<"\n";           
         }
+        needRecalculate();
     }
 
     double Graph::getAverageShortestPathLength(){
@@ -101,13 +106,13 @@ namespace Graph
             }
         }
         _averageShortestPathLength /= (verticesCount * verticesCount) ;
-        maximumShortestPathLength = _maximumShortestPathLength;
+        diameter = _maximumShortestPathLength;
         return averageShortestPathLength = _averageShortestPathLength;
     }
 
-    int Graph::getMaximumShortestPathLength(){
-        if(maximumShortestPathLength > 0){
-            return maximumShortestPathLength;
+    int Graph::getDiameter(){
+        if(diameter > 0){
+            return diameter;
         }
         double _averageShortestPathLength = 0;
         int _maximumShortestPathLength = 0;
@@ -139,7 +144,12 @@ namespace Graph
         }
         _averageShortestPathLength /= (verticesCount * verticesCount) ;
         averageShortestPathLength = _averageShortestPathLength;
-        return maximumShortestPathLength = _maximumShortestPathLength;
+        return diameter = _maximumShortestPathLength;
+    }
+
+    void Graph::needRecalculate(){
+        averageShortestPathLength = -1;
+        diameter = -1;
     }
 
     std::vector<int> Graph::shortestPathTree(int src) {

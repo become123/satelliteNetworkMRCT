@@ -32,13 +32,15 @@ namespace Graph
         std::vector<std::unordered_map<int, Edge>> adjList;
         std::set<Edge> edgeSet;
         double averageShortestPathLength = -1;
-        int maximumShortestPathLength = -1;
+        int diameter = -1;
     public:
         Graph(int v);
 
         Graph(int _verticesCount, std::set<Edge> _edgeSet);
 
         int getVerticesCount();
+
+        int getEdgesCount();
 
         std::set<Edge> getEdgeSet();
 
@@ -47,7 +49,9 @@ namespace Graph
 
         double getAverageShortestPathLength();
 
-        int getMaximumShortestPathLength();
+        int getDiameter();
+
+        void needRecalculate();
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
