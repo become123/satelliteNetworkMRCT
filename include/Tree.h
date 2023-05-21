@@ -7,6 +7,7 @@
 #include "ConvertTool.h"
 namespace Graph{
     class Edge;
+    class Graph;
 }
 
 namespace Tree
@@ -37,6 +38,7 @@ namespace Tree
         TreeNode* getNode(int id);
         std::set<Graph::Edge> getEdgeSet();
         void addEdge(int p, int v); //add edge from p to v, p is parent, v is child
+        Graph::Graph toGraph();
         void levelOrderTraversal(ConvertTool::satIdConversion &translateTool); //print level order traversal of the tree
         void buildLevelAndSubtreeSize();
     };

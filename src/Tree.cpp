@@ -96,6 +96,12 @@ namespace Tree
         nodes[v]->degree++;
     }
 
+    Graph::Graph Tree::toGraph(){
+        std::set<Graph::Edge> edgeSet = getEdgeSet();
+        return Graph::Graph(size, edgeSet);
+    }
+
+
     void Tree::levelOrderTraversal(ConvertTool::satIdConversion &translateTool){ //print level order traversal of the tree
         std::queue<TreeNode*> q;
         q.push(root);
@@ -109,6 +115,7 @@ namespace Tree
                 // std::cout<<translateTool.indexToSatId(cur->id)<<", ";
                 if(cur->level != level-1){
                     std::cout<<"level error\n";
+                    std::cout<<"maybe you forget to call buildLevelAndSubtreeSize()\n";
                     exit(-1);
                 }                
                 std::cout<<translateTool.indexToSatId(cur->id)<<", subtreeSize:"<<cur->subtreeSize<<", degree:"<<cur->degree<<", children:(";
