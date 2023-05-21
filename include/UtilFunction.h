@@ -18,7 +18,14 @@ namespace UtilFunction
 
     int getRandomInt(int min, int max);//取得min~max(包含)之間的隨機數
 
-    double average(const std::vector<int>& v); //計算vector<int>的平均值
+    template<typename T>
+    double average(const std::vector<T>& v) { //計算vector的平均值
+        T sum = 0;
+        for (const T& x : v) {
+            sum += x;
+        }
+        return static_cast<double>(sum) / v.size();
+    }   
 
     std::set<Graph::Edge> difference(const std::set<Graph::Edge>& s1, const std::set<Graph::Edge>& s2);//計算s1-s2
 }
