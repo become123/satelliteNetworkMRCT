@@ -49,7 +49,7 @@ namespace MainFunction
             std::cout<<"Tree depth:"<<mlt.getTreeDepth();
             std::cout<<", average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
-            std::cout<<", maximum shortest path length:";
+            std::cout<<", diameter:";
             std::cout<<mltGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
             maximumShortestPathLength.push_back(mltGraph.getDiameter());
@@ -57,10 +57,16 @@ namespace MainFunction
         }    
         std::cout<<"average tree depth:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(treeDepths);
-        std::cout<<", average average shortest path length:";
+        std::cout<<", minimum tree depth:"<<UtilFunction::minimum(treeDepths);
+        std::cout<<", maximum tree depth:"<<UtilFunction::maximum(treeDepths)<<"\n";
+        std::cout<<"average average shortest path length:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(averageShortestPathLength);
-        std::cout<<", average maximum shortest path length:";
-        std::cout<<UtilFunction::average(maximumShortestPathLength)<<"\n";
+        std::cout<<", minimum average shortest path length:"<<UtilFunction::minimum(averageShortestPathLength);
+        std::cout<<", maximum average shortest path length:"<<UtilFunction::maximum(averageShortestPathLength)<<"\n";
+        std::cout<<"average diameter:";
+        std::cout<<UtilFunction::average(maximumShortestPathLength);
+        std::cout<<", minimum diameter:"<<UtilFunction::minimum(maximumShortestPathLength);
+        std::cout<<", maximum diameter:"<<UtilFunction::maximum(maximumShortestPathLength)<<"\n";
     }
 
     //印出隨機生成的spanning tree的平均最短路徑長度和最長最短路徑長度
@@ -76,7 +82,7 @@ namespace MainFunction
             std::cout<<"Tree depth:"<<rst.getTreeDepth();
             std::cout<<", average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<rstGraph.getAverageShortestPathLength();
-            std::cout<<", maximum shortest path length:";
+            std::cout<<", diameter:";
             std::cout<<rstGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(rstGraph.getAverageShortestPathLength());
             maximumShortestPathLength.push_back(rstGraph.getDiameter());   
@@ -84,9 +90,17 @@ namespace MainFunction
         } 
         std::cout<<"average tree depth:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(treeDepths);
-        std::cout<<", average average shortest path length:";
+        std::cout<<", minimum tree depth:"<<UtilFunction::minimum(treeDepths);
+        std::cout<<", maximum tree depth:"<<UtilFunction::maximum(treeDepths)<<"\n";
+
+        std::cout<<"average average shortest path length:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(averageShortestPathLength);
-        std::cout<<", average maximum shortest path length:";
-        std::cout<<UtilFunction::average(maximumShortestPathLength)<<"\n";
+        std::cout<<", minimum average shortest path length:"<<UtilFunction::minimum(averageShortestPathLength);
+        std::cout<<", maximum average shortest path length:"<<UtilFunction::maximum(averageShortestPathLength)<<"\n";
+
+        std::cout<<"average diameter:";
+        std::cout<<UtilFunction::average(maximumShortestPathLength);
+        std::cout<<", minimum diameter:"<<UtilFunction::minimum(maximumShortestPathLength);
+        std::cout<<", maximum diameter:"<<UtilFunction::maximum(maximumShortestPathLength)<<"\n";
     }
 }

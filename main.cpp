@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     
     
     MainFunction::printAllSat_minimumLevelTree_statistic(satelliteNetworkGraph, translateTool);
-
+    std::cout<<"----------------------------------------------------------------------------------------------------\n";
     MainFunction::print_random_spanning_tree_statistic(satelliteNetworkGraph, translateTool);
 
 
