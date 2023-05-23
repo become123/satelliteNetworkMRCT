@@ -41,17 +41,23 @@ namespace MainFunction
         std::vector<int> allSatId = translateTool.allSatId();
         std::vector<double> averageShortestPathLength;
         std::vector<int> maximumShortestPathLength;
+        std::vector<int> treeDepths;
         for(auto satId: allSatId){
-            Graph::Graph mltGraph(satelliteNetworkGraph.getVerticesCount(),satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3).getEdgeSet());
-            std::cout<<"degree constrained minimum level tree of satellite "<<satId<<" average shortest path length:";
+            Tree::Tree mlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3);
+            Graph::Graph mltGraph(satelliteNetworkGraph.getVerticesCount(),mlt.getEdgeSet());
+            std::cout<<"degree constrained minimum level tree of satellite "<<satId<<": ";
+            std::cout<<"Tree depth:"<<mlt.getTreeDepth();
+            std::cout<<", average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
             std::cout<<", maximum shortest path length:";
             std::cout<<mltGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
             maximumShortestPathLength.push_back(mltGraph.getDiameter());
+            treeDepths.push_back(mlt.getTreeDepth());
         }    
-        std::cout<<"------------------------------------------------------------\n";
-        std::cout<<"average average shortest path length:";
+        std::cout<<"average tree depth:";
+        std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(treeDepths);
+        std::cout<<", average average shortest path length:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(averageShortestPathLength);
         std::cout<<", average maximum shortest path length:";
         std::cout<<UtilFunction::average(maximumShortestPathLength)<<"\n";
@@ -62,17 +68,23 @@ namespace MainFunction
         std::vector<int> allSatId = translateTool.allSatId();
         std::vector<double> averageShortestPathLength;
         std::vector<int> maximumShortestPathLength;
+        std::vector<int> treeDepths;
         for(size_t i = 0; i < allSatId.size(); ++i){
-            Graph::Graph rstGraph(satelliteNetworkGraph.getVerticesCount(),satelliteNetworkGraph.degreeConstrainedRandomSpanningTreeEdgeSet(3));
-            std::cout<<"degree constrained random spanning tree average shortest path length:";
+            Tree::Tree rst = satelliteNetworkGraph.degreeConstrainedRandomSpanningTreeEdgeSet(3);
+            Graph::Graph rstGraph = rst.toGraph();
+            std::cout<<"degree constrained random spanning tree: ";
+            std::cout<<"Tree depth:"<<rst.getTreeDepth();
+            std::cout<<", average shortest path length:";
             std::cout<<std::fixed<<std::setprecision(3)<<rstGraph.getAverageShortestPathLength();
             std::cout<<", maximum shortest path length:";
             std::cout<<rstGraph.getDiameter()<<"\n";
             averageShortestPathLength.push_back(rstGraph.getAverageShortestPathLength());
-            maximumShortestPathLength.push_back(rstGraph.getDiameter());       
+            maximumShortestPathLength.push_back(rstGraph.getDiameter());   
+            treeDepths.push_back(rst.getTreeDepth());    
         } 
-        std::cout<<"------------------------------------------------------------\n";
-        std::cout<<"average average shortest path length:";
+        std::cout<<"average tree depth:";
+        std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(treeDepths);
+        std::cout<<", average average shortest path length:";
         std::cout<<std::fixed<<std::setprecision(3)<<UtilFunction::average(averageShortestPathLength);
         std::cout<<", average maximum shortest path length:";
         std::cout<<UtilFunction::average(maximumShortestPathLength)<<"\n";
