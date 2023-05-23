@@ -25,7 +25,35 @@ namespace UtilFunction
             sum += x;
         }
         return static_cast<double>(sum) / v.size();
-    }   
+    } 
+
+    template<typename T>
+    T minimum(const std::vector<T>& v) { //計算vector的最小值
+        if (v.empty()) {
+            throw std::logic_error("Cannot find minimum of an empty vector");
+        }
+        T min_value = v[0];
+        for (const T& x : v) {
+            if (x < min_value) {
+                min_value = x;
+            }
+        }
+        return min_value;
+    } 
+
+    template<typename T>
+    T maximum(const std::vector<T>& v) { //計算vector的最大值
+        if (v.empty()) {
+            throw std::logic_error("Cannot find maximum of an empty vector");
+        }
+        T max_value = v[0];
+        for (const T& x : v) {
+            if (x > max_value) {
+                max_value = x;
+            }
+        }
+        return max_value;
+    }         
 
     std::set<Graph::Edge> difference(const std::set<Graph::Edge>& s1, const std::set<Graph::Edge>& s2);//計算s1-s2
 }
