@@ -242,7 +242,6 @@ namespace Graph
         return rst;
     }    
 
-
     std::set<Edge> Graph::minimumSpanningTreeEdgeSet(){
         // std::cout<<"minimumSpanningTree\n";
         DisjointSet::DisjointSet dsSet(verticesCount);
@@ -337,6 +336,7 @@ namespace Graph
                 }
             }
         }
+        mlt.buildLevelAndSubtreeSize();
         return mlt;
     }
 
@@ -358,6 +358,7 @@ namespace Graph
                 }
             }
         }
+        mlt.buildLevelAndSubtreeSize();
         return mlt;
     }    
 

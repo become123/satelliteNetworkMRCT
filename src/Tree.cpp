@@ -63,6 +63,7 @@ namespace Tree
         }
         root = nodes[cur];
         // std::cout<<"root is "<<root->id<<"\n";
+        buildLevelAndSubtreeSize();
     }
 
     Tree::~Tree(){
@@ -77,6 +78,10 @@ namespace Tree
 
     TreeNode* Tree::getNode(int id){
         return nodes[id];
+    }
+
+    int Tree::getTreeDepth(){
+        return treeDepth;
     }
 
     std::set<Graph::Edge> Tree::getEdgeSet(){
@@ -149,5 +154,9 @@ namespace Tree
 
     void Tree::buildLevelAndSubtreeSize(){
         this->buildLevelAndSubtreeSize(root);
+        treeDepth = 0;
+        for(auto &node: nodes){
+            treeDepth = std::max(treeDepth, node->level);
+        }
     }
 }
