@@ -340,11 +340,13 @@ namespace Graph
         return mlt;
     }
 
-    Tree::Tree Graph::degreeConstrainedMinimumLevelTree(int src, int degreeConstraint){ //BFS建出minimumLevelTree，限制每個node的最大degree
+    bool Graph::canSpanDegreeConstrainedMinimumLevelTree(int src, int degreeConstraint){ //回傳是否可以建出degreeConstrainedMinimumLevelTree
         DisjointSet::DisjointSet dsSet(verticesCount);
         Tree::Tree mlt = Tree::Tree(src, verticesCount);
         std::queue<int> q;
+        std::vector<bool> visited(verticesCount, false);
         q.push(src);
+        visited[src] = true;
         while(!q.empty()){
             int levelSize = q.size();
             while(levelSize--){
@@ -354,10 +356,46 @@ namespace Graph
                     if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
                         mlt.addEdge(u, v);
                         q.push(v);
+                        visited[v] = true;
                     }
                 }
             }
         }
+        for(int i = 0; i < verticesCount; ++i){
+            if(!visited[i]){
+                return false;
+            }
+        }  
+        return true;
+    }
+    
+    Tree::Tree Graph::degreeConstrainedMinimumLevelTree(int src, int degreeConstraint){ //BFS建出minimumLevelTree，限制每個node的最大degree
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        Tree::Tree mlt = Tree::Tree(src, verticesCount);
+        std::queue<int> q;
+        std::vector<bool> visited(verticesCount, false);
+        q.push(src);
+        visited[src] = true;
+        while(!q.empty()){
+            int levelSize = q.size();
+            while(levelSize--){
+                int u = q.front();
+                q.pop();
+                for(auto &[v, edge]: adjList[u]){
+                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                        mlt.addEdge(u, v);
+                        q.push(v);
+                        visited[v] = true;
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < verticesCount; ++i){
+            if(!visited[i]){
+                std::cout<<"error: degreeConstrainedMinimumLevelTree() can't build a tree with degreeConstraint "<<degreeConstraint<<"\n";
+                exit(1);
+            }
+        }     
         mlt.buildLevelAndSubtreeSize();
         return mlt;
     }    

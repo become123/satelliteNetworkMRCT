@@ -51,7 +51,7 @@ namespace Graph
 
         int getDiameter();
 
-        void needRecalculate();
+        void needRecalculate(); // Call this function when the graph is modified
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
@@ -69,6 +69,8 @@ namespace Graph
         std::set<Edge> minimumLevelTreeEdgeSet(int src); //BFS建出minimumLevelTree
 
         Tree::Tree minimumLevelTree(int src); //BFS建出minimumLevelTree
+
+        bool canSpanDegreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //回傳是否可以建出degreeConstrainedMinimumLevelTree
 
         Tree::Tree degreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
     };
