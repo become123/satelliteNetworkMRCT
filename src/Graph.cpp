@@ -92,7 +92,7 @@ namespace Graph
             adjList[u].erase(v);
             adjList[v].erase(u);
             edgeSet.erase(it);
-            if(!isConnect()){
+            if(!isConnected()){
                 adjList[u].emplace(v, Edge(u, v, weight));
                 adjList[v].emplace(u, Edge(v, u, weight));
                 edgeSet.insert(Edge(u, v, it->weight));
