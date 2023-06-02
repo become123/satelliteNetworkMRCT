@@ -42,6 +42,8 @@ namespace Graph
 
         int getEdgesCount();
 
+        bool isConnected(); // Check if the graph is connected
+
         std::set<Edge> getEdgeSet();
 
         // Function to add edge to the graph

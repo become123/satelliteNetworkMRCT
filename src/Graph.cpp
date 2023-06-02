@@ -18,6 +18,14 @@ namespace Graph
         return edgeSet.size();
     }
 
+    bool Graph::isConnected(){ // Check if the graph is connected
+        DisjointSet::DisjointSet disjointSet(verticesCount);
+        for(auto edge : edgeSet){
+            disjointSet.Union(edge.vertex1(), edge.vertex2());
+        }
+        return disjointSet.getGroupCount() == 1;
+    }
+
     std::set<Edge> Graph::getEdgeSet(){
         return edgeSet;
     }
@@ -80,14 +88,18 @@ namespace Graph
             auto it = std::next(edgeSet.begin(), randomInt);
             int u = it->vertex1();
             int v = it->vertex2();
-            if(adjList[u].size() == 1 || adjList[v].size() == 1){ //delete edge will make a vertex isolated
-                n++;
-                continue;
-            }
+            int weight = it->weight;
             adjList[u].erase(v);
             adjList[v].erase(u);
             edgeSet.erase(it);
-            std::cout<<"Delete edge: "<<translateTool.indexToSatId(u)<<" "<<translateTool.indexToSatId(v)<<"\n";
+            if(!isConnect()){
+                adjList[u].emplace(v, Edge(u, v, weight));
+                adjList[v].emplace(u, Edge(v, u, weight));
+                edgeSet.insert(Edge(u, v, it->weight));
+                n++;
+                continue;
+            }
+            // std::cout<<"Delete edge: "<<translateTool.indexToSatId(u)<<" "<<translateTool.indexToSatId(v)<<"\n";
         }
         needRecalculate();
     }
