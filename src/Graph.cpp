@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include "DisjointSet.h"
 #include "UtilFunction.h"
+#include "ConvertTool.h"
 
 namespace Graph
 {
@@ -71,6 +72,30 @@ namespace Graph
             // std::cout<<",size: "<<edgeSet.size()<<"\n";           
         }
         needRecalculate();
+    }
+
+    void Graph::randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool){ //random delete n edges, and make sure the graph is still connected
+        while(n--){
+            int randomInt = UtilFunction::getRandomInt(0, edgeSet.size()-1);
+            auto it = std::next(edgeSet.begin(), randomInt);
+            int u = it->vertex1();
+            int v = it->vertex2();
+            if(adjList[u].size() == 1 || adjList[v].size() == 1){ //delete edge will make a vertex isolated
+                n++;
+                continue;
+            }
+            adjList[u].erase(v);
+            adjList[v].erase(u);
+            edgeSet.erase(it);
+            std::cout<<"Delete edge: "<<translateTool.indexToSatId(u)<<" "<<translateTool.indexToSatId(v)<<"\n";
+        }
+        needRecalculate();
+    }
+
+    Graph Graph::getRandomDeleteEdgeGraph(int n, ConvertTool::satIdConversion &translateTool){ //return the graph that random delete n edges, and make sure the graph is still connected
+        Graph newGraph = *this;
+        newGraph.randomDeleteEdge(n, translateTool);
+        return newGraph;
     }
 
     double Graph::getAverageShortestPathLength(){
