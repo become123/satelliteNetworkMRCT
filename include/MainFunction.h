@@ -20,6 +20,9 @@ namespace MainFunction
 
     //印出隨機生成的spanning tree的平均最短路徑長度和最長最短路徑長度
     void print_random_spanning_tree_statistic(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
+
+    //模擬部分ISL壞掉的情形，印出星網以各個衛星為root的degree constrained minimum level tree的生成情形
+    void simulateISLbroken_DCMLT_spanning(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
 }
 
 #endif
