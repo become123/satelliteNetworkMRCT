@@ -50,7 +50,8 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
     
-    MainFunction::simulateISLbroken_DCMLT_spanning(satelliteNetworkGraph, translateTool);
+    Graph::Graph test = satelliteNetworkGraph.getRandomDeleteEdgeGraph(10, translateTool);
+    test.calculateLocalAvgDegree();
 
 
 

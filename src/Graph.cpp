@@ -10,6 +10,27 @@ namespace Graph
         weight = w;
     }
 
+    Graph::Graph(int v) {
+        verticesCount = v;
+        adjList.resize(verticesCount);
+        localAvgDegree.resize(verticesCount);
+        averageShortestPathLength = -1;
+        diameter = -1;
+    }
+
+    Graph::Graph(int _verticesCount, std::set<Edge> _edgeSet) {
+        verticesCount = _verticesCount;
+        adjList.resize(verticesCount);
+        localAvgDegree.resize(verticesCount);
+        for(auto edge : _edgeSet){
+            adjList[edge.vertex1()].emplace(edge.vertex2(), edge);
+            adjList[edge.vertex2()].emplace(edge.vertex1(), edge);
+        }
+        this->edgeSet = _edgeSet;
+        averageShortestPathLength = -1;
+        diameter = -1;
+    }
+    
     int Graph::getVerticesCount(){
         return verticesCount;
     }
@@ -30,6 +51,20 @@ namespace Graph
         return edgeSet;
     }
 
+    void Graph::calculateLocalAvgDegree(){
+        for(int i = 0; i < verticesCount; i++){
+            std::vector<int> degrees;
+            degrees.push_back(adjList[i].size());
+            for(auto &[neighbor,edge] : adjList[i]){
+                degrees.push_back(adjList[neighbor].size());
+            }
+            localAvgDegree[i] = UtilFunction::average(degrees);
+        }
+        for(int i = 0; i < verticesCount; i++){
+            std::cout<<"Node "<<i<<"'s local average degree is "<<localAvgDegree[i]<<"\n";
+        }
+    }
+
     bool Edge::operator<(const Edge& other) const {
         // Compare the vertex sets lexicographically
         if (verticeSet < other.verticeSet)
@@ -44,25 +79,6 @@ namespace Graph
     bool Edge::operator==(const Edge& other) const {
         return weight == other.weight && verticeSet == other.verticeSet;
     }    
-
-    Graph::Graph(int v) {
-        verticesCount = v;
-        adjList.resize(verticesCount);
-        averageShortestPathLength = -1;
-        diameter = -1;
-    }
-
-    Graph::Graph(int _verticesCount, std::set<Edge> _edgeSet) {
-        verticesCount = _verticesCount;
-        adjList.resize(verticesCount);
-        for(auto edge : _edgeSet){
-            adjList[edge.vertex1()].emplace(edge.vertex2(), edge);
-            adjList[edge.vertex2()].emplace(edge.vertex1(), edge);
-        }
-        this->edgeSet = _edgeSet;
-        averageShortestPathLength = -1;
-        diameter = -1;
-    }
 
     void Graph::addEdge(int u, int v, int w, bool weighted) {
         if(weighted){

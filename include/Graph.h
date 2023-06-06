@@ -31,6 +31,7 @@ namespace Graph
         int verticesCount;
         std::vector<std::unordered_map<int, Edge>> adjList;
         std::set<Edge> edgeSet;
+        std::vector<double> localAvgDegree;
         double averageShortestPathLength = -1;
         int diameter = -1;
     public:
@@ -45,6 +46,8 @@ namespace Graph
         bool isConnected(); // Check if the graph is connected
 
         std::set<Edge> getEdgeSet();
+
+        void calculateLocalAvgDegree(); // Calculate local average degree for each node
 
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);

@@ -51,7 +51,7 @@ namespace MainFunction
             std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
             std::cout<<", diameter:";
             std::cout<<mltGraph.getDiameter()<<"\n";
-                        averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
+            averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
             maximumShortestPathLength.push_back(mltGraph.getDiameter());
             treeDepths.push_back(mlt.getTreeDepth());
         }
@@ -113,7 +113,7 @@ namespace MainFunction
             std::vector<int> failCnts;
             int allFailCnt = 0;
             std::vector<double> averageShortestPathLengthDiff;
-            for(int time =  0; time < 10; ++time){ //模擬1000次
+            for(int time =  0; time < 1000; ++time){ //模擬1000次
                 Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(brokenLinkCnt, translateTool);
                 std::vector<double> averageShortestPathLength;       
                 int failCnt = 0;
