@@ -14,6 +14,7 @@ namespace Graph
         verticesCount = v;
         adjList.resize(verticesCount);
         localAvgDegree.resize(verticesCount);
+        localAvgDegree.assign(verticesCount, 0);
         averageShortestPathLength = -1;
         diameter = -1;
     }
@@ -22,9 +23,9 @@ namespace Graph
         verticesCount = _verticesCount;
         adjList.resize(verticesCount);
         localAvgDegree.resize(verticesCount);
+        localAvgDegree.assign(verticesCount, 0);
         for(auto edge : _edgeSet){
-            adjList[edge.vertex1()].emplace(edge.vertex2(), edge);
-            adjList[edge.vertex2()].emplace(edge.vertex1(), edge);
+            addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
         }
         this->edgeSet = _edgeSet;
         averageShortestPathLength = -1;
