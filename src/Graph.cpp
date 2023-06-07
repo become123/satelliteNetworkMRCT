@@ -27,7 +27,6 @@ namespace Graph
         for(auto edge : _edgeSet){
             addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
         }
-        this->edgeSet = _edgeSet;
         averageShortestPathLength = -1;
         diameter = -1;
     }
@@ -52,6 +51,12 @@ namespace Graph
         return edgeSet;
     }
 
+    void Graph::printLocalAvgDegree(){
+        for(int i = 0; i < verticesCount; i++){
+            std::cout<<"Node "<<i<<"'s local average degree is "<<localAvgDegree[i]<<"\n";
+        }
+    }
+
     void Graph::calculateLocalAvgDegree(){
         for(int i = 0; i < verticesCount; i++){
             std::vector<int> degrees;
@@ -60,9 +65,6 @@ namespace Graph
                 degrees.push_back(adjList[neighbor].size());
             }
             localAvgDegree[i] = UtilFunction::average(degrees);
-        }
-        for(int i = 0; i < verticesCount; i++){
-            std::cout<<"Node "<<i<<"'s local average degree is "<<localAvgDegree[i]<<"\n";
         }
     }
 
@@ -97,6 +99,23 @@ namespace Graph
             // std::cout<<",size: "<<edgeSet.size()<<"\n";           
         }
         needRecalculate();
+        std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
+        needReCalculateVertices.insert(u);
+        needReCalculateVertices.insert(v);
+        for(auto &[neighbor,edge] : adjList[u]){
+            needReCalculateVertices.insert(neighbor);
+        }
+        for(auto &[neighbor,edge] : adjList[v]){
+            needReCalculateVertices.insert(neighbor);
+        }
+        for(auto vertex : needReCalculateVertices){
+            std::vector<int> degrees;
+            degrees.push_back(adjList[vertex].size());
+            for(auto &[neighbor,edge] : adjList[vertex]){
+                degrees.push_back(adjList[neighbor].size());
+            }
+            localAvgDegree[vertex] = UtilFunction::average(degrees);
+        }
     }
 
     void Graph::randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool){ //random delete n edges, and make sure the graph is still connected

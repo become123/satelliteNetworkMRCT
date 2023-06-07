@@ -50,8 +50,12 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
     
-    Graph::Graph test = satelliteNetworkGraph.getRandomDeleteEdgeGraph(10, translateTool);
-    test.calculateLocalAvgDegree();
+    Tree::Tree dcmlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101),3);
+    Graph::Graph dcmltGraph = dcmlt.toGraph();
+    dcmltGraph.printLocalAvgDegree();
+    dcmltGraph.calculateLocalAvgDegree();
+    // dcmltGraph.printLocalAvgDegree();
+
 
 
 
