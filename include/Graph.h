@@ -47,6 +47,10 @@ namespace Graph
 
         std::set<Edge> getEdgeSet();
 
+        int getDegree(int vertex); // Get degree for a given vertex
+
+        double getLocalAvgDegree(int vertex); // Get local average degree for a given vertex
+
         void printLocalAvgDegree(); // Print local average degree for each node
 
         void calculateLocalAvgDegree(); // Calculate local average degree for each node

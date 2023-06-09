@@ -47,6 +47,14 @@ namespace Graph
         return disjointSet.getGroupCount() == 1;
     }
 
+    double Graph::getLocalAvgDegree(int vertex){ // Get local average degree for a given vertex
+        return localAvgDegree[vertex];
+    }
+
+    int Graph::getDegree(int vertex){ // Get degree for a given vertex
+        return adjList[vertex].size();
+    }
+    
     std::set<Edge> Graph::getEdgeSet(){
         return edgeSet;
     }
@@ -63,7 +71,7 @@ namespace Graph
             degrees.push_back(adjList[i].size());
             for(auto &[neighbor,edge] : adjList[i]){
                 degrees.push_back(adjList[neighbor].size());
-            }
+                }
             localAvgDegree[i] = UtilFunction::average(degrees);
         }
     }
@@ -113,7 +121,7 @@ namespace Graph
             degrees.push_back(adjList[vertex].size());
             for(auto &[neighbor,edge] : adjList[vertex]){
                 degrees.push_back(adjList[neighbor].size());
-            }
+                }
             localAvgDegree[vertex] = UtilFunction::average(degrees);
         }
     }
