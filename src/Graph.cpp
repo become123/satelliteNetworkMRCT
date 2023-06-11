@@ -121,7 +121,7 @@ namespace Graph
             degrees.push_back(adjList[vertex].size());
             for(auto &[neighbor,edge] : adjList[vertex]){
                 degrees.push_back(adjList[neighbor].size());
-                }
+            }
             localAvgDegree[vertex] = UtilFunction::average(degrees);
         }
     }

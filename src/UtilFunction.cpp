@@ -3,6 +3,11 @@
 
 namespace UtilFunction
 {
+    bool doubleEqual(double a, double b, double epsilon)//判斷兩個double是否相等
+    {
+        return std::abs(a - b) < epsilon;
+    }
+
     std::vector<std::string> split(std::string s, char delim)//將string根據delim做切割的函式
     {
         std::vector<std::string> result;
