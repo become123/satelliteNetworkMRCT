@@ -49,12 +49,9 @@ int main(int argc, char *argv[]) {
                                       stoi(satRelation[2]), 
                                       weighted);
     }
-    
-    Tree::Tree dcmlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101),3);
-    Graph::Graph dcmltGraph = dcmlt.toGraph();
-    dcmltGraph.printLocalAvgDegree();
-    dcmltGraph.calculateLocalAvgDegree();
-    // dcmltGraph.printLocalAvgDegree();
+
+    MainFunction::getGraphUsingBestDCMLT(satelliteNetworkGraph, translateTool);
+
 
 
 

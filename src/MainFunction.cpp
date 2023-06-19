@@ -149,4 +149,94 @@ namespace MainFunction
             std::cout<<UtilFunction::average(failCnts)<<"\n";
         }        
     }
+
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，並以此DCRST加入其他edge形成最終的星網拓普
+    void getGraphUsingBestDCMLT(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
+        // std::cout<<"satelliteNetworkGraph.getEdgesCount():"<<satelliteNetworkGraph.getEdgesCount()<<"\n";
+        // Tree::Tree mlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101), 3);
+        Tree::Tree mlt = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3);
+        std::cout<<"root id:"<<translateTool.indexToSatId(mlt.getRoot()->id)<<"\n---------------------------------------\n";
+        mlt.buildLevelAndSubtreeSize();
+        std::set<Graph::Edge> notSelectedEdges = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), mlt.getEdgeSet());
+        std::vector<Graph::Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
+        std::sort(notSelectedEdgesVector.begin(), notSelectedEdgesVector.end(), [&mlt](Graph::Edge e1, Graph::Edge e2){
+            int e1Degree = mlt.getNode(e1.vertex1())->degree + mlt.getNode(e1.vertex2())->degree;
+            int e2Degree = mlt.getNode(e2.vertex1())->degree + mlt.getNode(e2.vertex2())->degree;
+            int e1Level = mlt.getNode(e1.vertex1())->level + mlt.getNode(e1.vertex2())->level;
+            int e2Level = mlt.getNode(e2.vertex1())->level + mlt.getNode(e2.vertex2())->level;
+            int e1SubtreeSize = mlt.getNode(e1.vertex1())->subtreeSize + mlt.getNode(e1.vertex2())->subtreeSize;
+            int e2SubtreeSize = mlt.getNode(e2.vertex1())->subtreeSize + mlt.getNode(e2.vertex2())->subtreeSize;
+            // int treeDepth = mlt.getTreeDepth();
+            if(e1Degree < e2Degree){
+                return true;
+            }
+            else{
+                return false;
+            }
+            // if(abs(treeDepth-e1Level) < abs(treeDepth-e2Level)){
+            //     return true;
+            // }
+            if(e1Level > e2Level){
+                return true;
+            }        
+            else{
+                return false;
+            }
+            if(e1SubtreeSize > e2SubtreeSize){
+                return true;
+            }
+            return false;
+        });
+        // for(Graph::Edge e : notSelectedEdgesVector){
+        //     std::cout<<"("<<translateTool.indexToSatId(e.vertex1())<<","<<translateTool.indexToSatId(e.vertex2())<<"): ";
+        //     std::cout<<"degree: "<<mlt.getNode(e.vertex1())->degree + mlt.getNode(e.vertex2())->degree<<"( ";
+        //     std::cout<<"v1Degree: "<<mlt.getNode(e.vertex1())->degree<<", ";
+        //     std::cout<<"v2Degree: "<<mlt.getNode(e.vertex2())->degree<<") ";
+        //     std::cout<<"level: "<<mlt.getNode(e.vertex1())->level + mlt.getNode(e.vertex2())->level<<"( ";
+        //     std::cout<<"v1Level: "<<mlt.getNode(e.vertex1())->level<<", ";
+        //     std::cout<<"v2Level: "<<mlt.getNode(e.vertex2())->level<<") ";
+        //     std::cout<<"subtreeSize: "<<mlt.getNode(e.vertex1())->subtreeSize + mlt.getNode(e.vertex2())->subtreeSize<<"( ";
+        //     std::cout<<"v1SubtreeSize: "<<mlt.getNode(e.vertex1())->subtreeSize<<", ";
+        //     std::cout<<"v2SubtreeSize: "<<mlt.getNode(e.vertex2())->subtreeSize<<")\n";
+        // }
+        Graph::Graph mltGraph = mlt.toGraph(); 
+        std::cout<<"before:\n";
+        std::cout<<"Graph edge count: "<<mltGraph.getEdgesCount()<<", ";
+        std::cout<<"average shortest path length: "<<mltGraph.getAverageShortestPathLength()<<", ";
+        std::cout<<"diameter: "<<mltGraph.getDiameter()<<"\n";
+        // std::cout<<"degree sequence: ";
+        // for(int i = 0; i < (int)mltGraph.getVerticesCount(); ++i){
+        //     std::cout<<mltGraph.getDegree(i)<<" ";
+        // } 
+        // std::cout<<"\n";   
+        int i = 0;
+        while(mltGraph.getEdgesCount() < 187){
+            // std::cout<<"i = "<<i<<":";
+            if(mltGraph.getDegree(notSelectedEdgesVector[i].vertex1()) > 2 || mltGraph.getDegree(notSelectedEdgesVector[i].vertex2()) > 2){
+                ++i;
+                // std::cout<<"skip\n";
+                if(i == (int)notSelectedEdgesVector.size()){
+                    std::cout<<"**********************mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<", reach limit!**********************\n";
+                    break;
+                }            
+                continue;
+            }
+            // std::cout<<"add\n";
+            mltGraph.addEdge(notSelectedEdgesVector[i].vertex1(), notSelectedEdgesVector[i].vertex2(), 1, true);
+            ++i;
+            if(i == (int)notSelectedEdgesVector.size()){
+                std::cout<<"mltGraph.getEdgesCount():"<<mltGraph.getEdgesCount()<<"\n";
+                break;
+            }
+        }
+        std::cout<<"after:\n";
+        std::cout<<"Graph edge count: "<<mltGraph.getEdgesCount()<<", ";
+        std::cout<<"average shortest path length: "<<mltGraph.getAverageShortestPathLength()<<", ";
+        std::cout<<"diameter: "<<mltGraph.getDiameter()<<"\n";
+        // std::cout<<"degree sequence: ";
+        // for(int i = 0; i < (int)mltGraph.getVerticesCount(); ++i){
+        //     std::cout<<mltGraph.getDegree(i)<<" ";
+        // }
+        // std::cout<<"\n";
+    }
 }
