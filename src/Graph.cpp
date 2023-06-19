@@ -479,6 +479,27 @@ namespace Graph
         }     
         mlt.buildLevelAndSubtreeSize();
         return mlt;
-    }    
+    }  
+
+    Tree::Tree Graph::bestDegreeConstrainedMinimumLevelTree(int degreeConstraint){ //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
+        double bestAvgShortestPath = 1000000000;
+        int bestRoot = 0;
+        for(int i = 0; i < verticesCount; ++i){
+            if(!canSpanDegreeConstrainedMinimumLevelTree(i, degreeConstraint)){
+                continue;
+            }
+            Tree::Tree mlt = degreeConstrainedMinimumLevelTree(i, degreeConstraint);
+            Graph mltGraph = mlt.toGraph();
+            double avgShortestPath = mltGraph.getAverageShortestPathLength();
+            // std::cout<<"avgShortestPath:"<<avgShortestPath<<"\n";
+            if(avgShortestPath < bestAvgShortestPath){
+                // std::cout<<"bestAvgShortestPath:"<<avgShortestPath<<"\n";
+                bestAvgShortestPath = avgShortestPath;
+                bestRoot = i;
+            }
+        }
+        Tree::Tree bestMlt = degreeConstrainedMinimumLevelTree(bestRoot, degreeConstraint);
+        return bestMlt;
+    }        
 
 }

@@ -88,6 +88,8 @@ namespace Graph
         bool canSpanDegreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //回傳是否可以建出degreeConstrainedMinimumLevelTree
 
         Tree::Tree degreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
+    
+        Tree::Tree bestDegreeConstrainedMinimumLevelTree(int degreeConstraint); //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
     };
 }
 
