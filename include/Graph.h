@@ -58,6 +58,8 @@ namespace Graph
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);
 
+        void deleteEdge(int u, int v);
+        
         void randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool); //random delete n edges, and make sure the graph is still connected
 
         Graph getRandomDeleteEdgeGraph(int n, ConvertTool::satIdConversion &translateTool); //return the graph that random delete n edges, and make sure the graph is still connected

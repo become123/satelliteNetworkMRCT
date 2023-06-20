@@ -126,6 +126,31 @@ namespace Graph
         }
     }
 
+    void Graph::deleteEdge(int u, int v){
+        Edge e = adjList.at(u).at(v);
+        adjList[u].erase(v);
+        adjList[v].erase(u);
+        edgeSet.erase(e);
+        needRecalculate();
+        std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
+        needReCalculateVertices.insert(u);
+        needReCalculateVertices.insert(v);
+        for(auto &[neighbor,edge] : adjList[u]){
+            needReCalculateVertices.insert(neighbor);
+        }
+        for(auto &[neighbor,edge] : adjList[v]){
+            needReCalculateVertices.insert(neighbor);
+        }
+        for(auto vertex : needReCalculateVertices){
+            std::vector<int> degrees;
+            degrees.push_back(adjList[vertex].size());
+            for(auto &[neighbor,edge] : adjList[vertex]){
+                degrees.push_back(adjList[neighbor].size());
+            }
+            localAvgDegree[vertex] = UtilFunction::average(degrees);
+        }
+    }
+
     void Graph::randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool){ //random delete n edges, and make sure the graph is still connected
         while(n--){
             int randomInt = UtilFunction::getRandomInt(0, edgeSet.size()-1);
