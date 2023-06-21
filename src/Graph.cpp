@@ -235,6 +235,10 @@ namespace Graph
                     _averageShortestPathLength += ajacencyMatrix[i][j];
                     _maximumShortestPathLength = std::max(_maximumShortestPathLength, ajacencyMatrix[i][j]);
                 }
+                else{
+                    std::cout<<"Error: the graph is not connected\n";
+                    exit(1);
+                }
             }
         }
         _averageShortestPathLength /= (verticesCount * verticesCount) ;
@@ -553,4 +557,53 @@ namespace Graph
         return bestMlt;
     }        
 
+    //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)
+    void Graph::tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+        deleteEdge(e);
+        notSelectedEdges.insert(e);
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        for(auto e:edgeSet){
+            dsSet.Union(e.vertex1(), e.vertex2());
+        }
+        std::set<std::pair<int, std::pair<double, Edge>>> candidateEdges;
+        for(auto e:notSelectedEdges){
+            if(dsSet.find(e.vertex1()) != dsSet.find(e.vertex2()) && getDegree(e.vertex1()) < degreeConstraint && getDegree(e.vertex2()) < degreeConstraint){
+                addEdge(e.vertex1(), e.vertex2(), e.weight, true);
+                double avgShortestPath = getAverageShortestPathLength();
+                int diameter = getDiameter();
+                candidateEdges.insert({diameter, {avgShortestPath, e}});
+                deleteEdge(e);
+            }
+        }
+        // std::cout<<"candidateEdges.size():"<<candidateEdges.size()<<"\n";
+        if(!candidateEdges.empty()){
+            Edge bestEdge = candidateEdges.begin()->second.second;
+            addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true);
+            notSelectedEdges.erase(bestEdge);
+        }
+    }
+
+    //從tree的high level開始，循序對每一個edge進行local search
+    void Graph::treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+        std::vector<Edge> edgesSequence;
+        std::queue<Tree::TreeNode*> q;
+        q.push(tree.getRoot());
+        while(!q.empty()){
+            int levelSize = q.size();
+            while(levelSize--){
+                Tree::TreeNode* cur = q.front();
+                if(cur->parent != nullptr){
+                    edgesSequence.push_back({cur->parent->id, cur->id, 1});
+                }
+                q.pop();
+                for(auto child : cur->children){
+                    q.push(child);
+                }
+            }
+        }
+        std::reverse(edgesSequence.begin(), edgesSequence.end());
+        for(auto e:edgesSequence){
+            tryBetterEdge(e, notSelectedEdges, degreeConstraint);
+        }
+    }
 }

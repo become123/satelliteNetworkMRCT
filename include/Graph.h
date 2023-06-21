@@ -59,7 +59,7 @@ namespace Graph
         void addEdge(int u, int v, int w, bool weighted);
 
         void deleteEdge(int u, int v);
-        
+
         void deleteEdge(Edge e);
         
         void randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool); //random delete n edges, and make sure the graph is still connected
@@ -94,6 +94,10 @@ namespace Graph
         Tree::Tree degreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
     
         Tree::Tree bestDegreeConstrainedMinimumLevelTree(int degreeConstraint); //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
+
+        void tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint); //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)
+
+        void treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint); //從tree的high level開始，循序對每一個edge進行local search
     };
 }
 
