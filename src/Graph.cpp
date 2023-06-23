@@ -557,8 +557,9 @@ namespace Graph
         return bestMlt;
     }        
 
-    //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)
-    void Graph::tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+    //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)，回傳是否有找到更好的edge
+    bool Graph::tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+        bool res = false;
         deleteEdge(e);
         notSelectedEdges.insert(e);
         DisjointSet::DisjointSet dsSet(verticesCount);
@@ -578,13 +579,18 @@ namespace Graph
         // std::cout<<"candidateEdges.size():"<<candidateEdges.size()<<"\n";
         if(!candidateEdges.empty()){
             Edge bestEdge = candidateEdges.begin()->second.second;
+            if(!(bestEdge == e)){
+                res = true;
+            }
             addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true);
             notSelectedEdges.erase(bestEdge);
         }
+        return res;
     }
 
-    //從tree的high level開始，循序對每一個edge進行local search
-    void Graph::treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+    //從tree的high level開始，循序對每一個edge進行local search，回傳總共更動了幾個edge
+    int Graph::treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint){
+        int res = 0;
         std::vector<Edge> edgesSequence;
         std::queue<Tree::TreeNode*> q;
         q.push(tree.getRoot());
@@ -603,7 +609,10 @@ namespace Graph
         }
         std::reverse(edgesSequence.begin(), edgesSequence.end());
         for(auto e:edgesSequence){
-            tryBetterEdge(e, notSelectedEdges, degreeConstraint);
+            if(tryBetterEdge(e, notSelectedEdges, degreeConstraint)){
+                ++res;
+            }
         }
+        return res;
     }
 }
