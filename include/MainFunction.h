@@ -26,6 +26,9 @@ namespace MainFunction
 
     //找出所有衛星為root的DCRST中，路由效能最好的那一個，並以此DCRST加入其他edge形成最終的星網拓普
     void getGraphUsingBestDCMLT(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
+
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge形成最終的星網拓普
+    void getGraphUsingBestDCMLTwithLocalSearch(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
 }
 
 #endif

@@ -49,13 +49,7 @@ int main(int argc, char *argv[]) {
                                       stoi(satRelation[2]), 
                                       weighted);
     }
-
-    Tree::Tree dcmlt = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3);
-    Graph::Graph dcmltGraph = dcmlt.toGraph();
-    std::set<Graph::Edge> notSelectedEdgeSet = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), dcmltGraph.getEdgeSet());
-    std::cout<<"avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n";
-    dcmltGraph.treeGraphLocalSearch(dcmlt, notSelectedEdgeSet, 3);
-    std::cout<<"avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n";
+    MainFunction::getGraphUsingBestDCMLTwithLocalSearch(satelliteNetworkGraph, translateTool);
 
 
 

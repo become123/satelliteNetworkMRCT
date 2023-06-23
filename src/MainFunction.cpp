@@ -239,4 +239,105 @@ namespace MainFunction
         // }
         // std::cout<<"\n";
     }
+
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge形成最終的星網拓普
+    void getGraphUsingBestDCMLTwithLocalSearch(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
+        // std::cout<<"satelliteNetworkGraph.getEdgesCount():"<<satelliteNetworkGraph.getEdgesCount()<<"\n";
+        // Tree::Tree dcmlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101), 3);
+        Tree::Tree dcmlt = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3);
+        std::cout<<"root id:"<<translateTool.indexToSatId(dcmlt.getRoot()->id);
+        dcmlt.buildLevelAndSubtreeSize();
+        Graph::Graph dcmltGraph = dcmlt.toGraph();
+        std::set<Graph::Edge> notSelectedEdgeSet = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), dcmltGraph.getEdgeSet());
+        std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n\n";
+        int changeCnt = dcmltGraph.treeGraphLocalSearch(dcmlt, notSelectedEdgeSet, 3);
+        std::cout<<"change "<<changeCnt<<" edges after local search\n\n";
+        Tree::Tree dcmlt2(dcmltGraph.getEdgeSet()); 
+        std::cout<<"root id:"<<translateTool.indexToSatId(dcmlt2.getRoot()->id);
+        std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n";
+
+
+
+
+        std::set<Graph::Edge> notSelectedEdges = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), dcmlt2.getEdgeSet());
+        std::vector<Graph::Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
+        std::sort(notSelectedEdgesVector.begin(), notSelectedEdgesVector.end(), [&dcmlt2](Graph::Edge e1, Graph::Edge e2){
+            int e1Degree = dcmlt2.getNode(e1.vertex1())->degree + dcmlt2.getNode(e1.vertex2())->degree;
+            int e2Degree = dcmlt2.getNode(e2.vertex1())->degree + dcmlt2.getNode(e2.vertex2())->degree;
+            int e1Level = dcmlt2.getNode(e1.vertex1())->level + dcmlt2.getNode(e1.vertex2())->level;
+            int e2Level = dcmlt2.getNode(e2.vertex1())->level + dcmlt2.getNode(e2.vertex2())->level;
+            int e1SubtreeSize = dcmlt2.getNode(e1.vertex1())->subtreeSize + dcmlt2.getNode(e1.vertex2())->subtreeSize;
+            int e2SubtreeSize = dcmlt2.getNode(e2.vertex1())->subtreeSize + dcmlt2.getNode(e2.vertex2())->subtreeSize;
+            // int treeDepth = dcmlt2.getTreeDepth();
+            if(e1Degree < e2Degree){
+                return true;
+            }
+            else{
+                return false;
+            }
+            // if(abs(treeDepth-e1Level) < abs(treeDepth-e2Level)){
+            //     return true;
+            // }
+            if(e1Level > e2Level){
+                return true;
+            }        
+            else{
+                return false;
+            }
+            if(e1SubtreeSize > e2SubtreeSize){
+                return true;
+            }
+            return false;
+        });
+        // for(Graph::Edge e : notSelectedEdgesVector){
+        //     std::cout<<"("<<translateTool.indexToSatId(e.vertex1())<<","<<translateTool.indexToSatId(e.vertex2())<<"): ";
+        //     std::cout<<"degree: "<<dcmlt2.getNode(e.vertex1())->degree + dcmlt2.getNode(e.vertex2())->degree<<"( ";
+        //     std::cout<<"v1Degree: "<<dcmlt2.getNode(e.vertex1())->degree<<", ";
+        //     std::cout<<"v2Degree: "<<dcmlt2.getNode(e.vertex2())->degree<<") ";
+        //     std::cout<<"level: "<<dcmlt2.getNode(e.vertex1())->level + dcmlt2.getNode(e.vertex2())->level<<"( ";
+        //     std::cout<<"v1Level: "<<dcmlt2.getNode(e.vertex1())->level<<", ";
+        //     std::cout<<"v2Level: "<<dcmlt2.getNode(e.vertex2())->level<<") ";
+        //     std::cout<<"subtreeSize: "<<dcmlt2.getNode(e.vertex1())->subtreeSize + dcmlt2.getNode(e.vertex2())->subtreeSize<<"( ";
+        //     std::cout<<"v1SubtreeSize: "<<dcmlt2.getNode(e.vertex1())->subtreeSize<<", ";
+        //     std::cout<<"v2SubtreeSize: "<<dcmlt2.getNode(e.vertex2())->subtreeSize<<")\n";
+        // }
+        std::cout<<"------------------------------------------\nbefore add edge:\n";
+        std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
+        std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
+        std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";
+        // std::cout<<"degree sequence: ";
+        // for(int i = 0; i < (int)dcmltGraph.getVerticesCount(); ++i){
+        //     std::cout<<dcmltGraph.getDegree(i)<<" ";
+        // } 
+        // std::cout<<"\n";   
+        int i = 0;
+        while(dcmltGraph.getEdgesCount() < 200){
+            // std::cout<<"i = "<<i<<":";
+            if(dcmltGraph.getDegree(notSelectedEdgesVector[i].vertex1()) > 2 || dcmltGraph.getDegree(notSelectedEdgesVector[i].vertex2()) > 2){
+                ++i;
+                // std::cout<<"skip\n";
+                if(i == (int)notSelectedEdgesVector.size()){
+                    std::cout<<"**********************dcmltGraph EdgesCount:"<<dcmltGraph.getEdgesCount()<<", reach limit!**********************\n";
+                    break;
+                }            
+                continue;
+            }
+            // std::cout<<"add\n";
+            dcmltGraph.addEdge(notSelectedEdgesVector[i].vertex1(), notSelectedEdgesVector[i].vertex2(), 1, true);
+            ++i;
+            if(i == (int)notSelectedEdgesVector.size()){
+                std::cout<<"dcmltGraph.getEdgesCount():"<<dcmltGraph.getEdgesCount()<<"\n";
+                break;
+            }
+        }
+        std::cout<<"after:\n";
+        std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
+        std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
+        std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";
+        // std::cout<<"degree sequence: ";
+        // for(int i = 0; i < (int)dcmltGraph.getVerticesCount(); ++i){
+        //     std::cout<<dcmltGraph.getDegree(i)<<" ";
+        // }
+        // std::cout<<"\n";
+    }    
 }
