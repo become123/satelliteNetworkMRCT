@@ -19,6 +19,7 @@ namespace Graph
         int weight;
         Edge(int vertex1, int vertex2, int w);
         Edge(const Edge& other) : verticeSet(other.verticeSet), weight(other.weight) {}
+        Edge& operator=(const Edge& other);
         bool operator<(const Edge& other) const;
         bool operator==(const Edge& other) const;
         int vertex1() const { return *verticeSet.begin(); }

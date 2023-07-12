@@ -76,6 +76,17 @@ namespace Graph
         }
     }
 
+    Edge& Edge::operator=(const Edge& other) {
+        if (this == &other) {
+            return *this; // Handling self-assignment
+        }
+
+        verticeSet = other.verticeSet;
+        weight = other.weight;
+
+        return *this;
+    }    
+
     bool Edge::operator<(const Edge& other) const {
         // Compare the vertex sets lexicographically
         if (verticeSet < other.verticeSet)
