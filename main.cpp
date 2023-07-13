@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
                                       stoi(satRelation[2]), 
                                       weighted);
     }
-    MainFunction::getGraphUsingBestDCMLTwithLocalSearch(satelliteNetworkGraph, translateTool);
+    MainFunction::getGraphUsingBestDCMLTwithLocalSearchAndAddEdgesGreedily(satelliteNetworkGraph, translateTool);
 
 
 

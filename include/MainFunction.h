@@ -25,10 +25,13 @@ namespace MainFunction
     void simulateISLbroken_DCMLT_spanning(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
 
     //找出所有衛星為root的DCRST中，路由效能最好的那一個，並以此DCRST加入其他edge形成最終的星網拓普
-    void getGraphUsingBestDCMLT(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
+    void getGraphUsingBestDCMLTAndAddSortedEdges(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
 
     //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge形成最終的星網拓普
-    void getGraphUsingBestDCMLTwithLocalSearch(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
+    void getGraphUsingBestDCMLTwithLocalSearchAndAddSortedEdges(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
+
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+    void getGraphUsingBestDCMLTwithLocalSearchAndAddEdgesGreedily(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool);
 }
 
 #endif
