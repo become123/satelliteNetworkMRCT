@@ -150,8 +150,8 @@ namespace MainFunction
         }        
     }
 
-    //找出所有衛星為root的DCRST中，路由效能最好的那一個，並以此DCRST加入其他edge形成最終的星網拓普
-    void getGraphUsingBestDCMLT(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，並以此DCRST加入其他edge(有先依照tree的拓譜排序)形成最終的星網拓普
+    void getGraphUsingBestDCMLTAndAddSortedEdges(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
         // std::cout<<"satelliteNetworkGraph.getEdgesCount():"<<satelliteNetworkGraph.getEdgesCount()<<"\n";
         // Tree::Tree mlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101), 3);
         Tree::Tree mlt = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3);
@@ -240,8 +240,8 @@ namespace MainFunction
         // std::cout<<"\n";
     }
 
-    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge形成最終的星網拓普
-    void getGraphUsingBestDCMLTwithLocalSearch(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge(有先依照tree的拓譜排序)形成最終的星網拓普
+    void getGraphUsingBestDCMLTwithLocalSearchAndAddSortedEdges(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
         // std::cout<<"satelliteNetworkGraph.getEdgesCount():"<<satelliteNetworkGraph.getEdgesCount()<<"\n";
         // Tree::Tree dcmlt = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101), 3);
         Tree::Tree dcmlt = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3);
@@ -255,9 +255,6 @@ namespace MainFunction
         Tree::Tree dcmlt2(dcmltGraph.getEdgeSet()); 
         std::cout<<"root id:"<<translateTool.indexToSatId(dcmlt2.getRoot()->id);
         std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n";
-
-
-
 
         std::set<Graph::Edge> notSelectedEdges = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), dcmlt2.getEdgeSet());
         std::vector<Graph::Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
