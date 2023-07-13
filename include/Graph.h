@@ -32,7 +32,7 @@ namespace Graph
         int verticesCount;
         std::vector<std::unordered_map<int, Edge>> adjList;
         std::set<Edge> edgeSet;
-        std::vector<double> localAvgDegree;
+        // std::vector<double> localAvgDegree;
         double averageShortestPathLength = -1;
         int diameter = -1;
     public:
@@ -50,11 +50,11 @@ namespace Graph
 
         int getDegree(int vertex); // Get degree for a given vertex
 
-        double getLocalAvgDegree(int vertex); // Get local average degree for a given vertex
+        // double getLocalAvgDegree(int vertex); // Get local average degree for a given vertex
 
-        void printLocalAvgDegree(); // Print local average degree for each node
+        // void printLocalAvgDegree(); // Print local average degree for each node
 
-        void calculateLocalAvgDegree(); // Calculate local average degree for each node
+        // void calculateLocalAvgDegree(); // Calculate local average degree for each node
 
         // Function to add edge to the graph
         void addEdge(int u, int v, int w, bool weighted);

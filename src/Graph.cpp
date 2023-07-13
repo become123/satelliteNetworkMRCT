@@ -13,8 +13,8 @@ namespace Graph
     Graph::Graph(int v) {
         verticesCount = v;
         adjList.resize(verticesCount);
-        localAvgDegree.resize(verticesCount);
-        localAvgDegree.assign(verticesCount, 0);
+        // localAvgDegree.resize(verticesCount);
+        // localAvgDegree.assign(verticesCount, 0);
         averageShortestPathLength = -1;
         diameter = -1;
     }
@@ -22,8 +22,8 @@ namespace Graph
     Graph::Graph(int _verticesCount, std::set<Edge> _edgeSet) {
         verticesCount = _verticesCount;
         adjList.resize(verticesCount);
-        localAvgDegree.resize(verticesCount);
-        localAvgDegree.assign(verticesCount, 0);
+        // localAvgDegree.resize(verticesCount);
+        // localAvgDegree.assign(verticesCount, 0);
         for(auto edge : _edgeSet){
             addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
         }
@@ -47,9 +47,9 @@ namespace Graph
         return disjointSet.getGroupCount() == 1;
     }
 
-    double Graph::getLocalAvgDegree(int vertex){ // Get local average degree for a given vertex
-        return localAvgDegree[vertex];
-    }
+    // double Graph::getLocalAvgDegree(int vertex){ // Get local average degree for a given vertex
+    //     return localAvgDegree[vertex];
+    // }
 
     int Graph::getDegree(int vertex){ // Get degree for a given vertex
         return adjList[vertex].size();
@@ -59,22 +59,22 @@ namespace Graph
         return edgeSet;
     }
 
-    void Graph::printLocalAvgDegree(){
-        for(int i = 0; i < verticesCount; i++){
-            std::cout<<"Node "<<i<<"'s local average degree is "<<localAvgDegree[i]<<"\n";
-        }
-    }
+    // void Graph::printLocalAvgDegree(){
+    //     for(int i = 0; i < verticesCount; i++){
+    //         std::cout<<"Node "<<i<<"'s local average degree is "<<localAvgDegree[i]<<"\n";
+    //     }
+    // }
 
-    void Graph::calculateLocalAvgDegree(){
-        for(int i = 0; i < verticesCount; i++){
-            std::vector<int> degrees;
-            degrees.push_back(adjList[i].size());
-            for(auto &[neighbor,edge] : adjList[i]){
-                degrees.push_back(adjList[neighbor].size());
-                }
-            localAvgDegree[i] = UtilFunction::average(degrees);
-        }
-    }
+    // void Graph::calculateLocalAvgDegree(){
+    //     for(int i = 0; i < verticesCount; i++){
+    //         std::vector<int> degrees;
+    //         degrees.push_back(adjList[i].size());
+    //         for(auto &[neighbor,edge] : adjList[i]){
+    //             degrees.push_back(adjList[neighbor].size());
+    //             }
+    //         localAvgDegree[i] = UtilFunction::average(degrees);
+    //     }
+    // }
 
     Edge& Edge::operator=(const Edge& other) {
         if (this == &other) {
@@ -118,23 +118,23 @@ namespace Graph
             // std::cout<<",size: "<<edgeSet.size()<<"\n";           
         }
         needRecalculate();
-        std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
-        needReCalculateVertices.insert(u);
-        needReCalculateVertices.insert(v);
-        for(auto &[neighbor,edge] : adjList[u]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto &[neighbor,edge] : adjList[v]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto vertex : needReCalculateVertices){
-            std::vector<int> degrees;
-            degrees.push_back(adjList[vertex].size());
-            for(auto &[neighbor,edge] : adjList[vertex]){
-                degrees.push_back(adjList[neighbor].size());
-            }
-            localAvgDegree[vertex] = UtilFunction::average(degrees);
-        }
+        // std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
+        // needReCalculateVertices.insert(u);
+        // needReCalculateVertices.insert(v);
+        // for(auto &[neighbor,edge] : adjList[u]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto &[neighbor,edge] : adjList[v]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto vertex : needReCalculateVertices){
+        //     std::vector<int> degrees;
+        //     degrees.push_back(adjList[vertex].size());
+        //     for(auto &[neighbor,edge] : adjList[vertex]){
+        //         degrees.push_back(adjList[neighbor].size());
+        //     }
+        //     localAvgDegree[vertex] = UtilFunction::average(degrees);
+        // }
     }
 
     void Graph::deleteEdge(int u, int v){
@@ -143,23 +143,23 @@ namespace Graph
         adjList[v].erase(u);
         edgeSet.erase(e);
         needRecalculate();
-        std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
-        needReCalculateVertices.insert(u);
-        needReCalculateVertices.insert(v);
-        for(auto &[neighbor,edge] : adjList[u]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto &[neighbor,edge] : adjList[v]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto vertex : needReCalculateVertices){
-            std::vector<int> degrees;
-            degrees.push_back(adjList[vertex].size());
-            for(auto &[neighbor,edge] : adjList[vertex]){
-                degrees.push_back(adjList[neighbor].size());
-            }
-            localAvgDegree[vertex] = UtilFunction::average(degrees);
-        }
+        // std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
+        // needReCalculateVertices.insert(u);
+        // needReCalculateVertices.insert(v);
+        // for(auto &[neighbor,edge] : adjList[u]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto &[neighbor,edge] : adjList[v]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto vertex : needReCalculateVertices){
+        //     std::vector<int> degrees;
+        //     degrees.push_back(adjList[vertex].size());
+        //     for(auto &[neighbor,edge] : adjList[vertex]){
+        //         degrees.push_back(adjList[neighbor].size());
+        //     }
+        //     localAvgDegree[vertex] = UtilFunction::average(degrees);
+        // }
     }
 
     void Graph::deleteEdge(Edge e){
@@ -169,23 +169,23 @@ namespace Graph
         adjList[v].erase(u);
         edgeSet.erase(e);
         needRecalculate();
-        std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
-        needReCalculateVertices.insert(u);
-        needReCalculateVertices.insert(v);
-        for(auto &[neighbor,edge] : adjList[u]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto &[neighbor,edge] : adjList[v]){
-            needReCalculateVertices.insert(neighbor);
-        }
-        for(auto vertex : needReCalculateVertices){
-            std::vector<int> degrees;
-            degrees.push_back(adjList[vertex].size());
-            for(auto &[neighbor,edge] : adjList[vertex]){
-                degrees.push_back(adjList[neighbor].size());
-            }
-            localAvgDegree[vertex] = UtilFunction::average(degrees);
-        }
+        // std::set<int> needReCalculateVertices; //the vertices that need to recalculate the local average degree
+        // needReCalculateVertices.insert(u);
+        // needReCalculateVertices.insert(v);
+        // for(auto &[neighbor,edge] : adjList[u]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto &[neighbor,edge] : adjList[v]){
+        //     needReCalculateVertices.insert(neighbor);
+        // }
+        // for(auto vertex : needReCalculateVertices){
+        //     std::vector<int> degrees;
+        //     degrees.push_back(adjList[vertex].size());
+        //     for(auto &[neighbor,edge] : adjList[vertex]){
+        //         degrees.push_back(adjList[neighbor].size());
+        //     }
+        //     localAvgDegree[vertex] = UtilFunction::average(degrees);
+        // }
     }
 
     void Graph::randomDeleteEdge(int n, ConvertTool::satIdConversion &translateTool){ //random delete n edges, and make sure the graph is still connected
