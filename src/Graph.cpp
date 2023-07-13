@@ -496,14 +496,26 @@ namespace Graph
         visited[src] = true;
         while(!q.empty()){
             int levelSize = q.size();
+            std::unordered_map<int, std::vector<int>> levelNodes;//記錄這一層中有哪些以及他們的child nodes
+            int maxLength = 0;
             while(levelSize--){
                 int u = q.front();
                 q.pop();
+                levelNodes[u] = std::vector<int>();
                 for(auto &[v, edge]: adjList[u]){
-                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                        mlt.addEdge(u, v);
-                        q.push(v);
-                        visited[v] = true;
+                    levelNodes[u].push_back(v);
+                    maxLength = std::max(maxLength, (int)levelNodes[u].size());
+                }
+            }
+            for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
+                for(auto &[u, childNodes]: levelNodes){ //u為parent node
+                    if(i < (int)childNodes.size()){ //i為child node的index
+                        int v = childNodes[i];
+                        if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                            mlt.addEdge(u, v);
+                            q.push(v);
+                            visited[v] = true;
+                        }
                     }
                 }
             }
@@ -525,14 +537,26 @@ namespace Graph
         visited[src] = true;
         while(!q.empty()){
             int levelSize = q.size();
+            std::unordered_map<int, std::vector<int>> levelNodes;//記錄這一層中有哪些以及他們的child nodes
+            int maxLength = 0;
             while(levelSize--){
                 int u = q.front();
                 q.pop();
+                levelNodes[u] = std::vector<int>();
                 for(auto &[v, edge]: adjList[u]){
-                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                        mlt.addEdge(u, v);
-                        q.push(v);
-                        visited[v] = true;
+                    levelNodes[u].push_back(v);
+                    maxLength = std::max(maxLength, (int)levelNodes[u].size());
+                }
+            }
+            for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
+                for(auto &[u, childNodes]: levelNodes){ //u為parent node
+                    if(i < (int)childNodes.size()){ //i為child node的index
+                        int v = childNodes[i];
+                        if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                            mlt.addEdge(u, v);
+                            q.push(v);
+                            visited[v] = true;
+                        }
                     }
                 }
             }
