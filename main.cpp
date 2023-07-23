@@ -53,8 +53,25 @@ int main(int argc, char *argv[]) {
                                       stoi(satRelation[2]), 
                                       weighted);
     }
-    MainFunction::getGraphUsingBestDCMLTwithLocalSearchAndAddEdgesGreedily(satelliteNetworkGraph, translateTool);
 
+    for(int brokenLinkCnt = 5; brokenLinkCnt <= 50; brokenLinkCnt+=5){
+        std::cout<<"\n___________________________________brokenLinkCnt: "<<brokenLinkCnt<<"__________________________________________\n";
+        std::vector<int> edgeCount; //for calculate average value
+        std::vector<double> avgShortestPathLength; //for calculate average value
+        std::vector<int> diameter; //for calculate average value
+        for(int times = 0; times < 500; ++times){
+            Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(brokenLinkCnt, translateTool);
+            Graph::Graph g = brokenGraph.getGraphUsingBestDCMLTAndAddEdgesGreedily(3);  
+            edgeCount.push_back(g.getEdgesCount());
+            avgShortestPathLength.push_back(g.getAverageShortestPathLength());
+            diameter.push_back(g.getDiameter());         
+        }
+        Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(brokenLinkCnt, translateTool);
+        Graph::Graph g = brokenGraph.getGraphUsingBestDCMLTAndAddEdgesGreedily(3);
+        std::cout<<"avg Graph edge count: "<<UtilFunction::average(edgeCount)<<", ";
+        std::cout<<"avg average shortest path length: "<<UtilFunction::average(avgShortestPathLength)<<", ";
+        std::cout<<"avg diameter: "<<UtilFunction::average(diameter)<<"\n";
+    }
 
 
 

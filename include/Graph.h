@@ -99,6 +99,8 @@ namespace Graph
         bool tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint); //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)，回傳是否有找到更好的edge
 
         int treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint); //從tree的high level開始，循序對每一個edge進行local search，回傳總共更動了幾個edge
+    
+        Graph getGraphUsingBestDCMLTAndAddEdgesGreedily(int degreeConstraint); //找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
     };
 }
 
