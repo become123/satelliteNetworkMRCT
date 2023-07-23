@@ -573,7 +573,7 @@ namespace Graph
 
     Tree::Tree Graph::bestDegreeConstrainedMinimumLevelTree(int degreeConstraint){ //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
         double bestAvgShortestPath = 1000000000;
-        int bestRoot = 0;
+        int bestRoot = -1;
         for(int i = 0; i < verticesCount; ++i){
             if(!canSpanDegreeConstrainedMinimumLevelTree(i, degreeConstraint)){
                 continue;
@@ -587,6 +587,10 @@ namespace Graph
                 bestAvgShortestPath = avgShortestPath;
                 bestRoot = i;
             }
+        }
+        if(bestRoot == -1){
+            std::cout<<"error: bestDegreeConstrainedMinimumLevelTree() can't build a tree with degreeConstraint "<<degreeConstraint<<"\n";
+            exit(1);
         }
         Tree::Tree bestMlt = degreeConstrainedMinimumLevelTree(bestRoot, degreeConstraint);
         return bestMlt;
