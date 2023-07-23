@@ -338,24 +338,26 @@ namespace MainFunction
         // std::cout<<"\n";
     } 
 
-    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+    //找出所有衛星為root的DCRST中，路由效能最好的那一個，進行local search後(後來註解掉了)以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
     void getGraphUsingBestDCMLTwithLocalSearchAndAddEdgesGreedily(Graph::Graph& satelliteNetworkGraph, ConvertTool::satIdConversion &translateTool){
         // std::cout<<"satelliteNetworkGraph.getEdgesCount():"<<satelliteNetworkGraph.getEdgesCount()<<"\n";
         // Tree::Tree dcmltBeforeLocalSearch = satelliteNetworkGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(101), 3);
         Tree::Tree dcmltBeforeLocalSearch = satelliteNetworkGraph.bestDegreeConstrainedMinimumLevelTree(3); //先獲得以所有衛星為root的DCRST中，路由效能最好的那一個
+        // dcmltBeforeLocalSearch.levelOrderTraversal(translateTool);
         Graph::Graph dcmltGraph = dcmltBeforeLocalSearch.toGraph(); //轉成graph class
 
-        std::cout<<"best dcmlt root id:"<<translateTool.indexToSatId(dcmltBeforeLocalSearch.getRoot()->id); //印出root id
-        std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n\n"; //印出avg shortest path length和diameter
+        std::cout<<"best dcmlt root id:"<<translateTool.indexToSatId(dcmltBeforeLocalSearch.getRoot()->id)<<"\n"; //印出root id
+        // std::cout<<"avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n\n"; //印出avg shortest path length和diameter
         std::set<Graph::Edge> notSelectedEdgeSet = UtilFunction::difference(satelliteNetworkGraph.getEdgeSet(), dcmltGraph.getEdgeSet()); //找出沒有被選到的edge
-        int changeCnt = dcmltGraph.treeGraphLocalSearch(dcmltBeforeLocalSearch, notSelectedEdgeSet, 3); //進行local search
-        std::cout<<"change "<<changeCnt<<" edges after local search\n\n"; //印出local search後改變的edge數量
-        Tree::Tree dcmltAfterLocalSearch(dcmltGraph.getEdgeSet());  //將local search後的graph轉成tree
-        std::cout<<"best dcmlt root id:"<<translateTool.indexToSatId(dcmltAfterLocalSearch.getRoot()->id); //印出root id
-        std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n"; //印出avg shortest path length和diameter
+        // int changeCnt = dcmltGraph.treeGraphLocalSearch(dcmltBeforeLocalSearch, notSelectedEdgeSet, 3); //進行local search
+        // std::cout<<"change "<<changeCnt<<" edges after local search\n\n"; //印出local search後改變的edge數量
+        // Tree::Tree dcmltAfterLocalSearch(dcmltGraph.getEdgeSet());  //將local search後的graph轉成tree
+        // std::cout<<"best dcmlt root id:"<<translateTool.indexToSatId(dcmltAfterLocalSearch.getRoot()->id); //印出root id
+        // std::cout<<", avg shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", diameter:"<<dcmltGraph.getDiameter()<<"\n"; //印出avg shortest path length和diameter
 
         /*印出加入edge之前的數據*/
-        std::cout<<"------------------------------------------\nbefore add edge:\n";
+        // std::cout<<"------------------------------------------\n";
+        std::cout<<"before add edge:\n";
         std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
         std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
         std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";
@@ -398,6 +400,24 @@ namespace MainFunction
             dcmltGraph.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), 1, true); //加入最佳的edge
             // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
             notSelectedEdgeSet.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除
+            // if(dcmltGraph.getEdgesCount() == 140){
+            //     std::cout<<"after:\n";
+            //     std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
+            //     std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
+            //     std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";                
+            // }
+            // if(dcmltGraph.getEdgesCount() == 148){
+            //     std::cout<<"after:\n";
+            //     std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
+            //     std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
+            //     std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";                
+            // } 
+            // if(dcmltGraph.getEdgesCount() == 187){
+            //     std::cout<<"after:\n";
+            //     std::cout<<"Graph edge count: "<<dcmltGraph.getEdgesCount()<<", ";
+            //     std::cout<<"average shortest path length: "<<dcmltGraph.getAverageShortestPathLength()<<", ";
+            //     std::cout<<"diameter: "<<dcmltGraph.getDiameter()<<"\n";                
+            // }                           
         }
 
         /*印出加入edge之後的數據*/
