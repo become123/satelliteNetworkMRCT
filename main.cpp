@@ -20,6 +20,10 @@ const bool weighted = false;
 
 // Main function
 int main(int argc, char *argv[]) { 
+    clock_t start, End;
+    double cpu_time_used;
+    start = clock();    
+
     std::ifstream ifs(argv[1]);
     if (!ifs.is_open()) {
         std::cout << "Failed to open file.\n";
@@ -58,6 +62,8 @@ int main(int argc, char *argv[]) {
 
 
 
-
+    End = clock();
+    cpu_time_used = ((double) (End - start)) / CLOCKS_PER_SEC;
+    std::cout<<"cpu_time_used: "<<cpu_time_used<<"\n";
     return 0;
 }
