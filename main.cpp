@@ -66,8 +66,6 @@ int main(int argc, char *argv[]) {
             avgShortestPathLength.push_back(g.getAverageShortestPathLength());
             diameter.push_back(g.getDiameter());         
         }
-        Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(brokenLinkCnt, translateTool);
-        Graph::Graph g = brokenGraph.getGraphUsingBestDCMLTAndAddEdgesGreedily(3);
         std::cout<<"avg Graph edge count: "<<UtilFunction::average(edgeCount)<<", ";
         std::cout<<"avg average shortest path length: "<<UtilFunction::average(avgShortestPathLength)<<", ";
         std::cout<<"avg diameter: "<<UtilFunction::average(diameter)<<"\n";

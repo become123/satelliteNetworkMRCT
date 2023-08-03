@@ -75,8 +75,10 @@ namespace Graph
 
         // Function to find shortest path tree from a given source vertex, return vector is the parent of each node
         std::vector<int> shortestPathTree(int src);
-
+        
         std::set<Edge> randomSpanningTreeEdgeSet();
+
+        std::set<Edge> degreeConstrainedRandomSpanningTreeEdgeSetHelper(int degreeConstraint); //為了避免無法形成的情況發生
 
         std::set<Edge> degreeConstrainedRandomSpanningTreeEdgeSet(int degreeConstraint);
 
