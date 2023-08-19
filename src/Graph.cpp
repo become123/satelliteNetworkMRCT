@@ -516,31 +516,31 @@ namespace Graph
                 levelNodes[u] = std::vector<int>();
                 for(auto &[v, edge]: adjList[u]){
                     /*---------------old manner---------------*/
-                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                        mlt.addEdge(u, v);
-                        q.push(v);
-                        visited[v] = true;
-                    }
+                    // if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                    //     mlt.addEdge(u, v);
+                    //     q.push(v);
+                    //     visited[v] = true;
+                    // }
                     /*---------------old manner---------------*/        
                     /*---------------new manner---------------*/            
-                    // levelNodes[u].push_back(v);
-                    // maxLength = std::max(maxLength, (int)levelNodes[u].size());
+                    levelNodes[u].push_back(v);
+                    maxLength = std::max(maxLength, (int)levelNodes[u].size());
                     /*---------------new manner---------------*/
                 }
             }
             /*---------------new manner---------------*/
-            // for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
-            //     for(auto &[u, childNodes]: levelNodes){ //u為parent node
-            //         if(i < (int)childNodes.size()){ //i為child node的index
-            //             int v = childNodes[i];
-            //             if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-            //                 mlt.addEdge(u, v);
-            //                 q.push(v);
-            //                 visited[v] = true;
-            //             }
-            //         }
-            //     }
-            // }
+            for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
+                for(auto &[u, childNodes]: levelNodes){ //u為parent node
+                    if(i < (int)childNodes.size()){ //i為child node的index
+                        int v = childNodes[i];
+                        if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                            mlt.addEdge(u, v);
+                            q.push(v);
+                            visited[v] = true;
+                        }
+                    }
+                }
+            }
             /*---------------new manner---------------*/
         }
         for(int i = 0; i < verticesCount; ++i){
@@ -568,31 +568,31 @@ namespace Graph
                 levelNodes[u] = std::vector<int>();
                 for(auto &[v, edge]: adjList[u]){
                     /*---------------old manner---------------*/
-                    if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                        mlt.addEdge(u, v);
-                        q.push(v);
-                        visited[v] = true;
-                    }
+                    // if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                    //     mlt.addEdge(u, v);
+                    //     q.push(v);
+                    //     visited[v] = true;
+                    // }
                     /*---------------old manner---------------*/        
                     /*---------------new manner---------------*/            
-                    // levelNodes[u].push_back(v);
-                    // maxLength = std::max(maxLength, (int)levelNodes[u].size());
+                    levelNodes[u].push_back(v);
+                    maxLength = std::max(maxLength, (int)levelNodes[u].size());
                     /*---------------new manner---------------*/ 
                 }
             }
             /*---------------new manner---------------*/
-            // for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
-            //     for(auto &[u, childNodes]: levelNodes){ //u為parent node
-            //         if(i < (int)childNodes.size()){ //i為child node的index
-            //             int v = childNodes[i];
-            //             if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-            //                 mlt.addEdge(u, v);
-            //                 q.push(v);
-            //                 visited[v] = true;
-            //             }
-            //         }
-            //     }
-            // }
+            for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
+                for(auto &[u, childNodes]: levelNodes){ //u為parent node
+                    if(i < (int)childNodes.size()){ //i為child node的index
+                        int v = childNodes[i];
+                        if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
+                            mlt.addEdge(u, v);
+                            q.push(v);
+                            visited[v] = true;
+                        }
+                    }
+                }
+            }
             /*---------------new manner---------------*/ 
         }
         for(int i = 0; i < verticesCount; ++i){
@@ -727,4 +727,21 @@ namespace Graph
         }     
         return mltGraph;
     }
+
+    Graph Graph::getDegreeConstrainedRandomGraph(int degreeConstraint){
+        std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
+        Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);
+        while(notSelectedEdges.size() > 0){
+            int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
+            auto it = std::next(notSelectedEdges.begin(), randomIndex);
+            Edge edge = *it;
+            notSelectedEdges.erase(it);
+            if(res.getDegree(edge.vertex1()) < degreeConstraint && res.getDegree(edge.vertex2()) < degreeConstraint){
+                res.addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
+            }
+        }    
+        return res;        
+    }
+
 }
