@@ -1,4 +1,4 @@
-CC = g++ -std=c++17
+CC = g++ -std=c++17 -O3
 CFLAGS = -Wall -I./include # specifies the compiler flags to use. In this case, we are setting -Wall and -Werror to enable all warnings and treat warnings as errors, respectively, and -I./include to specify the path to the header file.
 
 SRCS = src/Tree.cpp src/UtilFunction.cpp src/ConvertTool.cpp src/Graph.cpp src/DisjointSet.cpp  src/MainFunction.cpp main.cpp # lists the source files that need to be compiled.

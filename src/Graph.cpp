@@ -690,11 +690,11 @@ namespace Graph
     }
 
     Graph Graph::getGraphUsingBestDCMLTAndAddEdgesGreedily(int degreeConstraint){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
-        Tree::Tree bestMlt = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
+        Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
         Graph mltGraph = bestMlt.toGraph();
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, mltGraph.edgeSet);
         double minAvgShortestPathLength = mltGraph.getAverageShortestPathLength();
-        while(mltGraph.getEdgesCount() < INT_MAX){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
+        while((double)mltGraph.getEdgesCount()*2/112 < 2.5){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
             Edge bestEdge(-1, -1, -1);
             for (std::set<Edge>::iterator it = notSelectedEdges.begin(); it != notSelectedEdges.end();){
                 if(mltGraph.getDegree(it->vertex1()) > 2 || mltGraph.getDegree(it->vertex2()) > 2){
@@ -732,7 +732,7 @@ namespace Graph
         std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
         Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);
-        while(notSelectedEdges.size() > 0){
+        while(notSelectedEdges.size() > 0 && (double)res.getEdgesCount()*2/112 < 2.5){
             int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
             auto it = std::next(notSelectedEdges.begin(), randomIndex);
             Edge edge = *it;

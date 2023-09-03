@@ -54,8 +54,9 @@ int main(int argc, char *argv[]) {
                                       weighted);
     }
 
-    for(int brokenLinkCnt = 5; brokenLinkCnt <= 50; brokenLinkCnt+=5){
-        std::cout<<"\n___________________________________brokenLinkCnt: "<<brokenLinkCnt<<"__________________________________________\n";
+    for(int brokenLinkCnt = 0; brokenLinkCnt <= 50; brokenLinkCnt+=5){
+        // std::cout<<"\n___________________________________brokenLinkCnt: "<<brokenLinkCnt<<"__________________________________________\n";
+        std::cout<<brokenLinkCnt<<", ";
         std::vector<int> edgeCount; //for calculate average value
         std::vector<double> avgShortestPathLength; //for calculate average value
         std::vector<int> diameter; //for calculate average value
@@ -66,9 +67,12 @@ int main(int argc, char *argv[]) {
             avgShortestPathLength.push_back(g.getAverageShortestPathLength());
             diameter.push_back(g.getDiameter());         
         }
-        std::cout<<"avg Graph edge count: "<<UtilFunction::average(edgeCount)<<", ";
-        std::cout<<"avg average shortest path length: "<<UtilFunction::average(avgShortestPathLength)<<", ";
-        std::cout<<"avg diameter: "<<UtilFunction::average(diameter)<<"\n";
+        // std::cout<<"avg Graph edge count: "<<UtilFunction::average(edgeCount)<<", ";
+        std::cout<<UtilFunction::average(edgeCount)<<", ";
+        // std::cout<<"avg average shortest path length: "<<UtilFunction::average(avgShortestPathLength)<<", ";
+        std::cout<<UtilFunction::average(avgShortestPathLength)<<", ";
+        // std::cout<<"avg diameter: "<<UtilFunction::average(diameter)<<"\n";
+        std::cout<<UtilFunction::average(diameter)<<"\n";
     }
 
 
