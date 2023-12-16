@@ -59,16 +59,24 @@ int main(int argc, char *argv[]) {
     std::map<int,std::vector<int>> diameterRecord; //for calculate average value
     for(int times = 0; times < 3000; ++times){
         Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(11, translateTool);
-        Graph::Graph g = brokenGraph.getGraphUsingBestDCMLTAndAddEdgesGreedily(3, 1000, avgShortestPathLengthRecord, diameterRecord);  
+        Graph::Graph g = brokenGraph.getGraphUsingDCRSTAndAddEdgesGreedily(3, 1000, avgShortestPathLengthRecord, diameterRecord);  
     }   
     for(auto &[edgeCount, avgShortestPathLength]: avgShortestPathLengthRecord){
         std::cout<<edgeCount<<": ";
         double sum = 0;
         for(double d: avgShortestPathLength){
             sum += d;
-            std::cout<<d<<", ";
         }
-        std::cout<<"Avg:  "<<sum/avgShortestPathLength.size()<<"\n";
+        std::cout<<"cnt:"<<avgShortestPathLength.size()<<", Avg :  "<<sum/avgShortestPathLength.size()<<"\n";
+    }
+    std::cout<<"----------------------------------------\n";
+    for(auto &[edgeCount, diameter]: diameterRecord){
+        std::cout<<edgeCount<<": ";
+        double sum = 0;
+        for(double d: diameter){
+            sum += d;
+        }
+        std::cout<<"cnt:"<<diameter.size()<<", Avg :  "<<sum/diameter.size()<<"\n";
     }
 
 

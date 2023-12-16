@@ -693,6 +693,8 @@ namespace Graph
         Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
         Graph mltGraph = bestMlt.toGraph();
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, mltGraph.edgeSet);
+        avgShortestPathLengthRecord[mltGraph.getEdgesCount()].push_back(mltGraph.getAverageShortestPathLength());
+        diameterRecord[(mltGraph.getEdgesCount())].push_back(mltGraph.getDiameter());         
         double minAvgShortestPathLength = mltGraph.getAverageShortestPathLength();
         while(mltGraph.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
             Edge bestEdge(-1, -1, -1);
@@ -734,6 +736,8 @@ namespace Graph
         std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
         Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[res.getEdgesCount()].push_back(res.getDiameter());        
         while(notSelectedEdges.size() > 0 && res.getEdgesCount() < edgeCount){
             int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
             auto it = std::next(notSelectedEdges.begin(), randomIndex);
@@ -752,6 +756,8 @@ namespace Graph
         Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
         Graph res = bestMlt.toGraph();
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[res.getEdgesCount()].push_back(res.getDiameter());       
         while(notSelectedEdges.size() > 0 && res.getEdgesCount() < edgeCount){
             int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
             auto it = std::next(notSelectedEdges.begin(), randomIndex);
@@ -770,7 +776,8 @@ namespace Graph
         std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
         Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);        
-
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());  
         double minAvgShortestPathLength = res.getAverageShortestPathLength();
         while(res.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
             Edge bestEdge(-1, -1, -1);
