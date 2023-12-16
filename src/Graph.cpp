@@ -689,12 +689,12 @@ namespace Graph
         return res;
     }
 
-    Graph Graph::getGraphUsingBestDCMLTAndAddEdgesGreedily(int degreeConstraint){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+    Graph Graph::getGraphUsingBestDCMLTAndAddEdgesGreedily(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
         Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
         Graph mltGraph = bestMlt.toGraph();
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, mltGraph.edgeSet);
         double minAvgShortestPathLength = mltGraph.getAverageShortestPathLength();
-        while((double)mltGraph.getEdgesCount()*2/112 < 2.5){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
+        while(mltGraph.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
             Edge bestEdge(-1, -1, -1);
             for (std::set<Edge>::iterator it = notSelectedEdges.begin(); it != notSelectedEdges.end();){
                 if(mltGraph.getDegree(it->vertex1()) > 2 || mltGraph.getDegree(it->vertex2()) > 2){
@@ -723,25 +723,88 @@ namespace Graph
             }
             mltGraph.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), 1, true); //加入最佳的edge
             // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
-            notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除                         
+            notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除 
+            avgShortestPathLengthRecord[mltGraph.getEdgesCount()].push_back(mltGraph.getAverageShortestPathLength());
+            diameterRecord[(mltGraph.getEdgesCount())].push_back(mltGraph.getDiameter());                   
         }     
         return mltGraph;
     }
 
-    Graph Graph::getDegreeConstrainedRandomGraph(int degreeConstraint){
+    Graph Graph::getDegreeConstrainedRandomGraph(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){
         std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
         Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
         std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);
-        while(notSelectedEdges.size() > 0 && (double)res.getEdgesCount()*2/112 < 2.5){
+        while(notSelectedEdges.size() > 0 && res.getEdgesCount() < edgeCount){
             int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
             auto it = std::next(notSelectedEdges.begin(), randomIndex);
             Edge edge = *it;
             notSelectedEdges.erase(it);
             if(res.getDegree(edge.vertex1()) < degreeConstraint && res.getDegree(edge.vertex2()) < degreeConstraint){
                 res.addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
+                avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+                diameterRecord[res.getEdgesCount()].push_back(res.getDiameter());
             }
         }    
         return res;        
     }
 
+    Graph Graph::getGraphUsingBestDCMLTAndAddEdgesRandomly(int degreeConstraint, int edgeCount, std::map<int, std::vector<double>> &avgShortestPathLengthRecord, std::map<int, std::vector<int>> &diameterRecord){
+        Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
+        Graph res = bestMlt.toGraph();
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+        while(notSelectedEdges.size() > 0 && res.getEdgesCount() < edgeCount){
+            int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
+            auto it = std::next(notSelectedEdges.begin(), randomIndex);
+            Edge edge = *it;
+            notSelectedEdges.erase(it);
+            if(res.getDegree(edge.vertex1()) < degreeConstraint && res.getDegree(edge.vertex2()) < degreeConstraint){
+                res.addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
+                avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+                diameterRecord[res.getEdgesCount()].push_back(res.getDiameter());
+            }
+        }    
+        return res;              
+    }
+
+    Graph Graph::getGraphUsingDCRSTAndAddEdgesGreedily(int degreeConstraint, int edgeCount, std::map<int, std::vector<double>> &avgShortestPathLengthRecord, std::map<int, std::vector<int>> &diameterRecord){
+        std::set<Edge> dcrst = degreeConstrainedRandomSpanningTreeEdgeSet(degreeConstraint);
+        Graph res(verticesCount, dcrst); //用DCRST當作初始的星網拓普，確保graph是connected的
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, dcrst);        
+
+        double minAvgShortestPathLength = res.getAverageShortestPathLength();
+        while(res.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
+            Edge bestEdge(-1, -1, -1);
+            for (std::set<Edge>::iterator it = notSelectedEdges.begin(); it != notSelectedEdges.end();){
+                if(res.getDegree(it->vertex1()) > 2 || res.getDegree(it->vertex2()) > 2){
+                    it = notSelectedEdges.erase(it);// because if adding this edge will cause graph node degree > 3
+                    continue;
+                }
+                res.addEdge(it->vertex1(), it->vertex2(), 1, true);
+                // std::cout<<"add edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
+                // std::cout<<"res EdgesCount:"<<res.getEdgesCount()<<"\n";
+                if(res.getAverageShortestPathLength() < minAvgShortestPathLength){
+                    // minDiameter = res.getDiameter();
+                    minAvgShortestPathLength = res.getAverageShortestPathLength();
+                    bestEdge = *it;
+                    // std::cout<<"find better avg shortest path length,";
+                    // std::cout<<"average shortest path length: "<<res.getAverageShortestPathLength()<<", ";
+                    // std::cout<<"diameter: "<<res.getDiameter()<<"\n";                        
+                }
+                res.deleteEdge(it->vertex1(), it->vertex2());
+                // std::cout<<"delete edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
+                // std::cout<<"res EdgesCount:"<<res.getEdgesCount()<<"\n";
+                ++it;
+            }
+            if(bestEdge.vertex1() == -1){ //如果沒有找到可以使avg shortest path有提升的edge，則停止加入edge
+                // std::cout<<"**********************res EdgesCount:"<<res.getEdgesCount()<<", reach limit!**********************\n";
+                break;
+            }
+            res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), 1, true); //加入最佳的edge
+            // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
+            notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除 
+            avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+            diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());                   
+        }     
+        return res;        
+    }
 }
