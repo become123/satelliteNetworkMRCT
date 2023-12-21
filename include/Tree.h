@@ -37,6 +37,9 @@ namespace Tree
         ~Tree();
         TreeNode* getRoot();
         TreeNode* getNode(int id);
+        int getDegree(int id);
+        int getLevel(int id);
+        int getSubtreeSize(int id);
         int getTreeDepth();
         std::set<Graph::Edge> getEdgeSet();
         void addEdge(int p, int v); //add edge from p to v, p is parent, v is child

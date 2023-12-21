@@ -80,6 +80,18 @@ namespace Tree
         return nodes[id];
     }
 
+    int Tree::getDegree(int id){
+        return nodes[id]->degree;
+    }
+
+    int Tree::getLevel(int id){
+        return nodes[id]->level;
+    }
+
+    int Tree::getSubtreeSize(int id){
+        return nodes[id]->subtreeSize;
+    }
+
     int Tree::getTreeDepth(){
         return treeDepth;
     }
