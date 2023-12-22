@@ -45,4 +45,48 @@ namespace UtilFunction
         return result;
     }
 
+    void placeOptimalEdgeLast(std::vector<Graph::Edge>& notSelectedEdges, const std::vector<std::pair<int, std::pair<int, int>>>& nodeInfo) { //將最適合的邊放到最後一個
+        int lastIndex = notSelectedEdges.size() - 1;
+        int selectedIndex = lastIndex; // 預設最後一個元素為最適合的
+
+        for (int i = 0; i < lastIndex; ++i) {
+            Graph::Edge e1 = notSelectedEdges[i];
+            Graph::Edge e2 = notSelectedEdges[selectedIndex];
+
+            int u1 = e1.vertex1();
+            int v1 = e1.vertex2();
+            int u2 = e2.vertex1();
+            int v2 = e2.vertex2();
+
+            int e1DegreeSum = nodeInfo[u1].first + nodeInfo[v1].first;
+            int e2DegreeSum = nodeInfo[u2].first + nodeInfo[v2].first;
+            if (e1DegreeSum != e2DegreeSum) {
+                if (e1DegreeSum < e2DegreeSum) {
+                    selectedIndex = i;
+                }
+                continue;
+            }
+
+            int e1SubtreeSizeSum = nodeInfo[u1].second.second + nodeInfo[v1].second.second;
+            int e2SubtreeSizeSum = nodeInfo[u2].second.second + nodeInfo[v2].second.second;
+            if (e1SubtreeSizeSum != e2SubtreeSizeSum) {
+                if (e1SubtreeSizeSum > e2SubtreeSizeSum) {
+                    selectedIndex = i;
+                }
+                continue;
+            }            
+
+            int e1LevelSum = nodeInfo[u1].second.first + nodeInfo[v1].second.first;
+            int e2LevelSum = nodeInfo[u2].second.first + nodeInfo[v2].second.first;
+            if (e1LevelSum != e2LevelSum) {
+                if (e1LevelSum > e2LevelSum) {
+                    selectedIndex = i;
+                }
+                continue;
+            }
+        }
+
+        // 將最適合的邊與最後一個元素交換
+        std::swap(notSelectedEdges[selectedIndex], notSelectedEdges[lastIndex]);
+    }
 }

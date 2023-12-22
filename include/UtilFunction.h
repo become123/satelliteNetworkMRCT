@@ -58,6 +58,8 @@ namespace UtilFunction
     }         
 
     std::set<Graph::Edge> difference(const std::set<Graph::Edge>& s1, const std::set<Graph::Edge>& s2);//計算s1-s2
+
+    void placeOptimalEdgeLast(std::vector<Graph::Edge>& notSelectedEdges, const std::vector<std::pair<int, std::pair<int, int>>>& nodeInfo);
 }
 
 

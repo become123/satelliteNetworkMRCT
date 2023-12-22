@@ -782,7 +782,7 @@ namespace Graph
         while(res.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
             Edge bestEdge(-1, -1, -1);
             for (std::set<Edge>::iterator it = notSelectedEdges.begin(); it != notSelectedEdges.end();){
-                if(res.getDegree(it->vertex1()) > 2 || res.getDegree(it->vertex2()) > 2){
+                if(res.getDegree(it->vertex1()) >= degreeConstraint || res.getDegree(it->vertex2()) >= degreeConstraint){
                     it = notSelectedEdges.erase(it);// because if adding this edge will cause graph node degree > 3
                     continue;
                 }
@@ -814,4 +814,76 @@ namespace Graph
         }     
         return res;        
     }
+
+    Graph Graph::getGraphUsingBestDCMLTAndAddEdgesBaseOnTreeStructure(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+        Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
+        Graph res = bestMlt.toGraph();
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+        std::vector<Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());         
+        std::vector<std::pair<int, std::pair<int, int>>> nodeInfo(res.verticesCount, {0, {0, 0}});//(degree, (level, subtreeSize))
+        for(int i = 0; i < res.verticesCount; ++i){
+            nodeInfo[i].first = bestMlt.getDegree(i);
+            nodeInfo[i].second.first = bestMlt.getLevel(i);
+            nodeInfo[i].second.second = bestMlt.getSubtreeSize(i);
+        }
+        while(res.getEdgesCount() < edgeCount && !notSelectedEdgesVector.empty()){ 
+            UtilFunction::placeOptimalEdgeLast(notSelectedEdgesVector, nodeInfo);
+            Edge bestEdge = notSelectedEdgesVector.back();
+            if(res.getDegree(bestEdge.vertex1()) < degreeConstraint && res.getDegree(bestEdge.vertex2()) < degreeConstraint){
+                res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true);
+                nodeInfo[bestEdge.vertex1()].first++;//
+                nodeInfo[bestEdge.vertex2()].first++;
+                // nodeInfo[bestEdge.vertex1()].second.second+=nodeInfo[bestEdge.vertex2()].second.second;
+                // nodeInfo[bestEdge.vertex2()].second.second+=nodeInfo[bestEdge.vertex1()].second.second;
+                avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+                diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());
+            }
+            notSelectedEdgesVector.pop_back();
+        }
+        return res;
+    }
+
+    // Graph Graph::getGraphUsingBestDCMLTAndAddEdgesBaseOnTreeStructure(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+    //     Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
+    //     Graph res = bestMlt.toGraph();
+    //     std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+    //     std::vector<Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
+    //     avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+    //     diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());  
+    //     std::sort(notSelectedEdgesVector.begin(), notSelectedEdgesVector.end(), [&bestMlt](Edge e1, Edge e2){  
+    //         int e1DegreeSum = bestMlt.getDegree(e1.vertex1()) + bestMlt.getDegree(e1.vertex2());
+    //         int e2DegreeSum = bestMlt.getDegree(e2.vertex1()) + bestMlt.getDegree(e2.vertex2());
+    //         if(e1DegreeSum < e2DegreeSum){
+    //             return true;
+    //         }
+    //         else{
+    //             return false;
+    //         }
+    //         int e1SubtreeSizeSum = bestMlt.getSubtreeSize(e1.vertex1()) + bestMlt.getSubtreeSize(e1.vertex2());
+    //         int e2SubtreeSizeSum = bestMlt.getSubtreeSize(e2.vertex1()) + bestMlt.getSubtreeSize(e2.vertex2());            
+    //         if(e1SubtreeSizeSum > e2SubtreeSizeSum){
+    //             return true;
+    //         }            
+    //         int e1LevelSum = bestMlt.getLevel(e1.vertex1()) + bestMlt.getLevel(e1.vertex2());
+    //         int e2LevelSum = bestMlt.getLevel(e2.vertex1()) + bestMlt.getLevel(e2.vertex2());            
+    //         if(e1LevelSum > e2LevelSum){
+    //             return true;
+    //         }        
+    //         else{
+    //             return false;
+    //         }
+    //         return false;
+    //     });   
+    //     for(int i = 0; res.getEdgesCount() < edgeCount && i < static_cast<int>(notSelectedEdgesVector.size()); ++i){
+    //         if(res.getDegree(notSelectedEdgesVector[i].vertex1()) >= degreeConstraint || res.getDegree(notSelectedEdgesVector[i].vertex2()) >= degreeConstraint){
+    //             continue;
+    //         }
+    //         res.addEdge(notSelectedEdgesVector[i].vertex1(), notSelectedEdgesVector[i].vertex2(), 1, true);
+    //         avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+    //         diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());
+    //     }
+    //     return res;
+    // }    
 }
