@@ -72,6 +72,14 @@ namespace Tree
         }
     }
 
+    void Tree::setFaulty(){
+        size = -1;
+    }
+
+    int Tree::getSize(){
+        return size;
+    }
+
     TreeNode* Tree::getRoot(){
         return root;
     }

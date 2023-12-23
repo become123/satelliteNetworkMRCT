@@ -833,8 +833,8 @@ namespace Graph
             Edge bestEdge = notSelectedEdgesVector.back();
             if(res.getDegree(bestEdge.vertex1()) < degreeConstraint && res.getDegree(bestEdge.vertex2()) < degreeConstraint){
                 res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true);
-                nodeInfo[bestEdge.vertex1()].first++;//
-                nodeInfo[bestEdge.vertex2()].first++;
+                // nodeInfo[bestEdge.vertex1()].first++;
+                // nodeInfo[bestEdge.vertex2()].first++;
                 // nodeInfo[bestEdge.vertex1()].second.second+=nodeInfo[bestEdge.vertex2()].second.second;
                 // nodeInfo[bestEdge.vertex2()].second.second+=nodeInfo[bestEdge.vertex1()].second.second;
                 avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());

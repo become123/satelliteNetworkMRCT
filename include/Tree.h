@@ -35,6 +35,8 @@ namespace Tree
         Tree(int rootId, int size);
         Tree(std::set<Graph::Edge> edgeSet);
         ~Tree();
+        void setFaulty();
+        int getSize();
         TreeNode* getRoot();
         TreeNode* getNode(int id);
         int getDegree(int id);
