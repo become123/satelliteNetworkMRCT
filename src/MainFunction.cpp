@@ -118,21 +118,13 @@ namespace MainFunction
                 std::vector<double> averageShortestPathLength;       
                 int failCnt = 0;
                 for(auto satId: allSatId){
-                    if(brokenGraph.canSpanDegreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3)){
-                        Tree::Tree mlt = brokenGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3);
-                        Graph::Graph mltGraph(brokenGraph.getVerticesCount(),mlt.getEdgeSet());
-                        // std::cout<<"degree constrained minimum level tree of satellite "<<satId<<": ";
-                        // std::cout<<"Tree depth:"<<mlt.getTreeDepth();
-                        // std::cout<<", average shortest path length:";
-                        // std::cout<<std::fixed<<std::setprecision(3)<<mltGraph.getAverageShortestPathLength();
-                        // std::cout<<", diameter:";
-                        // std::cout<<mltGraph.getDiameter()<<"\n";
-                        averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
-                    }
-                    else{
-                        // std::cout<<"sat "<<satId<<" can't span degree constrained minimum level tree\n";
+                    Tree::Tree mlt = brokenGraph.degreeConstrainedMinimumLevelTree(translateTool.satIdToIndex(satId), 3);
+                    if(mlt.getSize() == -1){ //not connected
                         failCnt++;
+                        continue;
                     }
+                    Graph::Graph mltGraph(brokenGraph.getVerticesCount(),mlt.getEdgeSet());
+                    averageShortestPathLength.push_back(mltGraph.getAverageShortestPathLength());
                 } 
                 if(averageShortestPathLength.size() == 0){
                     allFailCnt++;
