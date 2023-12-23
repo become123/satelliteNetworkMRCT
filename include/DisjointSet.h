@@ -13,6 +13,7 @@ namespace DisjointSet
         DisjointSet(int n);
         int find(int x);
         bool Union(int x, int y);
+        bool connected(int x, int y);
         int getGroupCount();
     };
 }

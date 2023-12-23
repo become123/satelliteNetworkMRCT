@@ -34,6 +34,10 @@ namespace DisjointSet
         return true;
     }
 
+    bool DisjointSet::connected(int x, int y){
+        return find(x) == find(y);
+    }
+
     int DisjointSet::getGroupCount() {
         return groupCount;
     }
