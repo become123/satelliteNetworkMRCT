@@ -489,7 +489,7 @@ namespace Graph
                 q.pop();
                 for(auto &[v, edge]: adjList[u]){
                     if(dsSet.Union(u, v)){
-                        mlt.addEdge(u, v);
+                        mlt.addEdge(u, v, edge.weight);
                         q.push(v);
                     }
                 }
@@ -508,12 +508,12 @@ namespace Graph
         visited[src] = true;
         while(!q.empty()){
             int levelSize = q.size();
-            std::unordered_map<int, std::vector<int>> levelNodes;//記錄這一層中有哪些以及他們的child nodes
+            std::unordered_map<int, std::vector<std::pair<int, int>>> levelNodes;//記錄這一層中有哪些以及他們的child nodes, pair.first為child node, pair.second為edge weight
             int maxLength = 0;
             while(levelSize--){
                 int u = q.front();
                 q.pop();
-                levelNodes[u] = std::vector<int>();
+                levelNodes[u] = std::vector<std::pair<int, int>>();
                 for(auto &[v, edge]: adjList[u]){
                     /*---------------old manner---------------*/
                     // if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
@@ -523,7 +523,7 @@ namespace Graph
                     // }
                     /*---------------old manner---------------*/        
                     /*---------------new manner---------------*/            
-                    levelNodes[u].push_back(v);
+                    levelNodes[u].push_back({v, edge.weight});
                     maxLength = std::max(maxLength, (int)levelNodes[u].size());
                     /*---------------new manner---------------*/ 
                 }
@@ -532,9 +532,9 @@ namespace Graph
             for(int i = 0; i < maxLength; ++i){ //Round-robin將每個node的child nodes加入tree及queue中
                 for(auto &[u, childNodes]: levelNodes){ //u為parent node
                     if(i < (int)childNodes.size()){ //i為child node的index
-                        int v = childNodes[i];
+                        int v = childNodes[i].first;
                         if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                            mlt.addEdge(u, v);
+                            mlt.addEdge(u, v, childNodes[i].second);
                             q.push(v);
                             visited[v] = true;
                         }
@@ -587,13 +587,13 @@ namespace Graph
         visited[src] = true;
         while(!q.empty()){
             int levelSize = q.size();
-            std::unordered_map<int, std::pair<int,std::vector<int>>> levelNodes;//記錄這一層中有哪些以及他們的child nodes
+            std::unordered_map<int, std::pair<int,std::vector<std::pair<int, int>>>> levelNodes;//記錄這一層中有哪些以及他們的child nodes, pair.first為child node, pair.second為edge weight
             while(levelSize--){
                 int u = q.front();
                 q.pop();
-                levelNodes[u] = std::pair{0, std::vector<int>()};
+                levelNodes[u] = std::pair(0, std::vector<std::pair<int, int>>());
                 for(auto &[v, edge]: adjList[u]){        
-                    levelNodes[u].second.push_back(v);
+                    levelNodes[u].second.push_back({v, edge.weight});
                 }
             }
             while(!levelNodes.empty()){
@@ -604,14 +604,14 @@ namespace Graph
                         continue;
                     }
                     int &i = it->second.first;
-                    std::vector<int> &childNodes = it->second.second;
-                    while(i < (int)childNodes.size() && dsSet.connected(u, childNodes[i])){ //i為child node的index
+                    std::vector<std::pair<int, int>> &childNodes = it->second.second;
+                    while(i < (int)childNodes.size() && dsSet.connected(u, childNodes[i].first)){ //i為child node的index
                         ++i;
                     }
                     if(i < (int)childNodes.size()){ //i為child node的index
-                        int v = childNodes[i];
+                        int v = childNodes[i].first;
                         if(dsSet.Union(u, v)){
-                            mlt.addEdge(u, v);
+                            mlt.addEdge(u, v, childNodes[i].second);
                             q.push(v);
                             visited[v] = true;
                             ++i;

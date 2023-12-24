@@ -19,11 +19,11 @@ namespace Tree
             nodes[i] = new TreeNode(i);
         }
         //find center of the tree to be the root(using topology sort)
-        std::vector<std::vector<int>> adjList(size); 
+        std::vector<std::vector<std::pair<int, int>>> adjList(size);  //adjList[i] = {j, edgeWeight}
         std::vector<int> degree(size, 0);
         for(auto edge: edgeSet){
-            adjList[edge.vertex1()].push_back(edge.vertex2());
-            adjList[edge.vertex2()].push_back(edge.vertex1());
+            adjList[edge.vertex1()].push_back({edge.vertex2(), edge.weight});
+            adjList[edge.vertex2()].push_back({edge.vertex1(), edge.weight});
             degree[edge.vertex1()]++;
             degree[edge.vertex2()]++;
         }
@@ -43,14 +43,14 @@ namespace Tree
                 cur = q.front();
                 q.pop();
                 for(auto v: adjList[cur]){
-                    if(added[v] == false){ 
+                    if(added[v.first] == false){ 
                         // std::cout<<"parent: "<<v<<", child: "<<cur<<"\n";
-                        addEdge(v, cur);
+                        addEdge(v.first, cur, v.second);
                         cnt++;
                         added[cur] = true; // prevent adding edge in parent->child direction
                     }
-                    if(--degree[v] == 1){
-                        q.push(v);
+                    if(--degree[v.first] == 1){
+                        q.push(v.first);
                     }
                 }
             }
@@ -108,16 +108,17 @@ namespace Tree
         std::set<Graph::Edge> edgeSet;
         for(int i = 0; i < size; ++i){
             for(auto child: nodes[i]->children){
-                edgeSet.insert(Graph::Edge(i, child->id, 1));
+                edgeSet.insert(Graph::Edge(i, child->id, child->parentEdgeWeight));
             }
         }
         return edgeSet;
     }
 
-    void Tree::addEdge(int p, int v){ //add edge from p to v, p is parent, v is child
+    void Tree::addEdge(int p, int v, int edgeWeight){ //add edge from p to v, p is parent, v is child
         nodes[p]->children.push_back(nodes[v]);
         nodes[p]->degree++;
         nodes[v]->parent = nodes[p];
+        nodes[v]->parentEdgeWeight = edgeWeight;
         nodes[v]->degree++;
     }
 
