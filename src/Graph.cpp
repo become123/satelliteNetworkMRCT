@@ -89,14 +89,10 @@ namespace Graph
     }    
 
     bool Edge::operator<(const Edge& other) const {
-        // Compare the vertex sets lexicographically
-        if (verticeSet < other.verticeSet)
-            return true;
-        else if (verticeSet > other.verticeSet)
-            return false;
-
-        // If the vertex sets are the same, compare the weights
-        return weight < other.weight;
+        if (weight != other.weight) {
+            return weight < other.weight;
+        }
+        return verticeSet < other.verticeSet;
     }
 
     bool Edge::operator==(const Edge& other) const {
@@ -498,7 +494,29 @@ namespace Graph
         mlt.buildLevelAndSubtreeSize();
         return mlt;
     }
-   
+
+    Tree::Tree Graph::degreeConstrainedMinimumSpanningTree(int degreeConstraint){
+        // std::cout<<"minimumSpanningTree\n";
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        std::set<Edge> edgeCandidates(edgeSet);
+        std::vector<int> degree(verticesCount, 0);
+        std::set<Edge> mst;
+        for(auto &edge: edgeCandidates){
+            if(degree[edge.vertex1()] < degreeConstraint && degree[edge.vertex2()] < degreeConstraint && dsSet.Union(edge.vertex1(), edge.vertex2())){
+                // std::cout<<"edge: "<<edge.vertex1()<<" "<<edge.vertex2()<<" "<<edge.weight<<"\n";
+                mst.insert(edge);
+            }
+            if(dsSet.getGroupCount() == 1){
+                break;
+            }
+        }
+        if(dsSet.getGroupCount() != 1){
+            std::cout<<"error: degreeConstrainedMinimumSpanningTree() can't build a tree with degreeConstraint "<<degreeConstraint<<"\n";
+            exit(1);
+        }
+        return Tree::Tree(mst);
+    }
+
     Tree::Tree Graph::degreeConstrainedMinimumLevelTree(int src, int degreeConstraint){ //BFS建出minimumLevelTree，限制每個node的最大degree
         DisjointSet::DisjointSet dsSet(verticesCount);
         Tree::Tree mlt = Tree::Tree(src, verticesCount);
@@ -517,7 +535,7 @@ namespace Graph
                 for(auto &[v, edge]: adjList[u]){
                     /*---------------old manner---------------*/
                     // if(mlt.getNode(u)->degree < degreeConstraint && dsSet.Union(u, v)){
-                    //     mlt.addEdge(u, v);
+                    //     mlt.addEdge(u, v, edge.weight);
                     //     q.push(v);
                     //     visited[v] = true;
                     // }
@@ -656,7 +674,6 @@ namespace Graph
         return bestMlt;
     }       
 
-
     //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)，回傳是否有找到更好的edge
     bool Graph::tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint){
         bool res = false;
@@ -730,7 +747,7 @@ namespace Graph
                     it = notSelectedEdges.erase(it);// because if adding this edge will cause graph node degree > 3
                     continue;
                 }
-                mltGraph.addEdge(it->vertex1(), it->vertex2(), 1, true);
+                mltGraph.addEdge(it->vertex1(), it->vertex2(), it->weight, true); 
                 // std::cout<<"add edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
                 // std::cout<<"mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<"\n";
                 if(mltGraph.getAverageShortestPathLength() < minAvgShortestPathLength){
@@ -750,7 +767,7 @@ namespace Graph
                 // std::cout<<"**********************mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<", reach limit!**********************\n";
                 break;
             }
-            mltGraph.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), 1, true); //加入最佳的edge
+            mltGraph.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true); //加入edge
             // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
             notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除 
             avgShortestPathLengthRecord[mltGraph.getEdgesCount()].push_back(mltGraph.getAverageShortestPathLength());
@@ -813,7 +830,7 @@ namespace Graph
                     it = notSelectedEdges.erase(it);// because if adding this edge will cause graph node degree > 3
                     continue;
                 }
-                res.addEdge(it->vertex1(), it->vertex2(), 1, true);
+                res.addEdge(it->vertex1(), it->vertex2(), it->weight, true); 
                 // std::cout<<"add edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
                 // std::cout<<"res EdgesCount:"<<res.getEdgesCount()<<"\n";
                 if(res.getAverageShortestPathLength() < minAvgShortestPathLength){
@@ -833,7 +850,7 @@ namespace Graph
                 // std::cout<<"**********************res EdgesCount:"<<res.getEdgesCount()<<", reach limit!**********************\n";
                 break;
             }
-            res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), 1, true); //加入最佳的edge
+            res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true); //加入最佳的edge
             // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
             notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除 
             avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
@@ -872,6 +889,99 @@ namespace Graph
         return res;
     }
 
+    Graph Graph::getGraphUsingDCMSTAndAddEdgesGreedily(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+        Tree::Tree bestMlt = degreeConstrainedMinimumSpanningTree(degreeConstraint);
+        Graph mltGraph = bestMlt.toGraph();
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, mltGraph.edgeSet);
+        avgShortestPathLengthRecord[mltGraph.getEdgesCount()].push_back(mltGraph.getAverageShortestPathLength());
+        diameterRecord[(mltGraph.getEdgesCount())].push_back(mltGraph.getDiameter());         
+        double minAvgShortestPathLength = mltGraph.getAverageShortestPathLength();
+        while(mltGraph.getEdgesCount() < edgeCount){ //不斷加入當前可以使avg shortest path有最佳提升的edge，直到edge數量達到特定數量
+            Edge bestEdge(-1, -1, -1);
+            for (std::set<Edge>::iterator it = notSelectedEdges.begin(); it != notSelectedEdges.end();){
+                if(mltGraph.getDegree(it->vertex1()) > 2 || mltGraph.getDegree(it->vertex2()) > 2){
+                    it = notSelectedEdges.erase(it);// because if adding this edge will cause graph node degree > 3
+                    continue;
+                }
+                mltGraph.addEdge(it->vertex1(), it->vertex2(), it->weight, true);
+                // std::cout<<"add edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
+                // std::cout<<"mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<"\n";
+                if(mltGraph.getAverageShortestPathLength() < minAvgShortestPathLength){
+                    // minDiameter = mltGraph.getDiameter();
+                    minAvgShortestPathLength = mltGraph.getAverageShortestPathLength();
+                    bestEdge = *it;
+                    // std::cout<<"find better avg shortest path length,";
+                    // std::cout<<"average shortest path length: "<<mltGraph.getAverageShortestPathLength()<<", ";
+                    // std::cout<<"diameter: "<<mltGraph.getDiameter()<<"\n";                        
+                }
+                mltGraph.deleteEdge(it->vertex1(), it->vertex2());
+                // std::cout<<"delete edge: "<<it->vertex1()<<" "<<it->vertex2()<<"\n";
+                // std::cout<<"mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<"\n";
+                ++it;
+            }
+            if(bestEdge.vertex1() == -1){ //如果沒有找到可以使avg shortest path有提升的edge，則停止加入edge
+                // std::cout<<"**********************mltGraph EdgesCount:"<<mltGraph.getEdgesCount()<<", reach limit!**********************\n";
+                break;
+            }
+            mltGraph.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true); //加入最佳的edge
+            // std::cout<<"-----------------add edge: "<<bestEdge.vertex1()<<" "<<bestEdge.vertex2()<<"------------------\n";
+            notSelectedEdges.erase(bestEdge); //將加入的edge從notSelectedEdgeSet中刪除 
+            avgShortestPathLengthRecord[mltGraph.getEdgesCount()].push_back(mltGraph.getAverageShortestPathLength());
+            diameterRecord[(mltGraph.getEdgesCount())].push_back(mltGraph.getDiameter());                   
+        }     
+        return mltGraph;
+    }
+
+    Graph Graph::getGraphUsingDCMSTAndAddEdgesRandomly(int degreeConstraint, int edgeCount, std::map<int, std::vector<double>> &avgShortestPathLengthRecord, std::map<int, std::vector<int>> &diameterRecord){
+        Tree::Tree bestMlt = degreeConstrainedMinimumSpanningTree(degreeConstraint);
+        Graph res = bestMlt.toGraph();
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());       
+        while(notSelectedEdges.size() > 0 && res.getEdgesCount() < edgeCount){
+            int randomIndex = UtilFunction::getRandomInt(0, notSelectedEdges.size() - 1);
+            auto it = std::next(notSelectedEdges.begin(), randomIndex);
+            Edge edge = *it;
+            notSelectedEdges.erase(it);
+            if(res.getDegree(edge.vertex1()) < degreeConstraint && res.getDegree(edge.vertex2()) < degreeConstraint){
+                res.addEdge(edge.vertex1(), edge.vertex2(), edge.weight, true);
+                avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+                diameterRecord[res.getEdgesCount()].push_back(res.getDiameter());
+            }
+        }    
+        return res;        
+    }
+
+    Graph Graph::getGraphUsingDCMSTAndAddSortedEdge(int degreeConstraint, int edgeCount, std::map<int, std::vector<double>> &avgShortestPathLengthRecord, std::map<int, std::vector<int>> &diameterRecord){
+        Tree::Tree bestMlt = degreeConstrainedMinimumSpanningTree(degreeConstraint);
+        Graph res = bestMlt.toGraph();
+        std::set<Edge> notSelectedEdges = UtilFunction::difference(edgeSet, res.edgeSet);
+        std::vector<Edge> notSelectedEdgesVector(notSelectedEdges.begin(), notSelectedEdges.end());
+        avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+        diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());       
+        std::vector<std::pair<int, std::pair<int, int>>> nodeInfo(res.verticesCount, {0, {0, 0}});//(degree, (level, subtreeSize))
+        for(int i = 0; i < res.verticesCount; ++i){
+            nodeInfo[i].first = bestMlt.getDegree(i);
+            nodeInfo[i].second.first = bestMlt.getLevel(i);
+            nodeInfo[i].second.second = bestMlt.getSubtreeSize(i);
+        }
+        while(res.getEdgesCount() < edgeCount && !notSelectedEdgesVector.empty()){ 
+            UtilFunction::placeOptimalEdgeLast(notSelectedEdgesVector, nodeInfo);
+            Edge bestEdge = notSelectedEdgesVector.back();
+            if(res.getDegree(bestEdge.vertex1()) < degreeConstraint && res.getDegree(bestEdge.vertex2()) < degreeConstraint){
+                res.addEdge(bestEdge.vertex1(), bestEdge.vertex2(), bestEdge.weight, true);
+                // nodeInfo[bestEdge.vertex1()].first++;
+                // nodeInfo[bestEdge.vertex2()].first++;
+                // nodeInfo[bestEdge.vertex1()].second.second+=nodeInfo[bestEdge.vertex2()].second.second;
+                // nodeInfo[bestEdge.vertex2()].second.second+=nodeInfo[bestEdge.vertex1()].second.second;
+                avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
+                diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());
+            }
+            notSelectedEdgesVector.pop_back();
+        }
+        return res;      
+    }    
+
     // Graph Graph::getGraphUsingBestDCMLTAndAddEdgesBaseOnTreeStructure(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord){//找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
     //     Tree::Tree bestMlt = bestDegreeConstrainedMinimumLevelTree(degreeConstraint);
     //     Graph res = bestMlt.toGraph();
@@ -907,7 +1017,7 @@ namespace Graph
     //         if(res.getDegree(notSelectedEdgesVector[i].vertex1()) >= degreeConstraint || res.getDegree(notSelectedEdgesVector[i].vertex2()) >= degreeConstraint){
     //             continue;
     //         }
-    //         res.addEdge(notSelectedEdgesVector[i].vertex1(), notSelectedEdgesVector[i].vertex2(), 1, true);
+    //         res.addEdge(notSelectedEdgesVector[i].vertex1(), notSelectedEdgesVector[i].vertex2(), notSelectedEdgesVector[i].weight, true);
     //         avgShortestPathLengthRecord[res.getEdgesCount()].push_back(res.getAverageShortestPathLength());
     //         diameterRecord[(res.getEdgesCount())].push_back(res.getDiameter());
     //     }

@@ -67,6 +67,13 @@ namespace UtilFunction
                 continue;
             }
 
+            if(e1.weight != e2.weight){
+                if(e1.weight < e2.weight){
+                    selectedIndex = i;
+                }
+                continue;
+            }            
+
             int e1SubtreeSizeSum = nodeInfo[u1].second.second + nodeInfo[v1].second.second;
             int e2SubtreeSizeSum = nodeInfo[u2].second.second + nodeInfo[v2].second.second;
             if (e1SubtreeSizeSum != e2SubtreeSizeSum) {

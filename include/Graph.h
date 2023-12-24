@@ -92,6 +92,8 @@ namespace Graph
 
         Tree::Tree minimumLevelTree(int src); //BFS建出minimumLevelTree
 
+        Tree::Tree degreeConstrainedMinimumSpanningTree(int degreeConstraint); //找出degree constrained minimum spanning tree
+
         Tree::Tree degreeConstrainedMinimumLevelTree(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
     
         Tree::Tree bestDegreeConstrainedMinimumLevelTree(int degreeConstraint); //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
@@ -113,6 +115,12 @@ namespace Graph
         Graph getGraphUsingDCRSTAndAddEdgesGreedily(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord); 
     
         Graph getGraphUsingBestDCMLTAndAddEdgesBaseOnTreeStructure(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord); //找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+    
+        Graph getGraphUsingDCMSTAndAddEdgesGreedily(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord); //找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+
+        Graph getGraphUsingDCMSTAndAddEdgesRandomly(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord); //找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
+        
+        Graph getGraphUsingDCMSTAndAddSortedEdge(int degreeConstraint, int edgeCount, std::map<int,std::vector<double>> &avgShortestPathLengthRecord, std::map<int,std::vector<int>> &diameterRecord); //找出所有衛星為root的DCRST中，路由效能最好的那一個，以此DCRST加入其他edge(greedy追求最佳avg shortest path)形成最終的星網拓普
     };
 }
 
