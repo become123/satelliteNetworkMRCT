@@ -578,6 +578,85 @@ namespace Graph
         return bestMlt;
     }        
 
+    Tree::Tree Graph::degreeConstrainedMinimumLevelTree2(int src, int degreeConstraint){ //BFS建出minimumLevelTree，限制每個node的最大degree
+        DisjointSet::DisjointSet dsSet(verticesCount);
+        Tree::Tree mlt = Tree::Tree(src, verticesCount);
+        std::queue<int> q;
+        std::vector<bool> visited(verticesCount, false);
+        q.push(src);
+        visited[src] = true;
+        while(!q.empty()){
+            int levelSize = q.size();
+            std::unordered_map<int, std::pair<int,std::vector<int>>> levelNodes;//記錄這一層中有哪些以及他們的child nodes
+            while(levelSize--){
+                int u = q.front();
+                q.pop();
+                levelNodes[u] = std::pair{0, std::vector<int>()};
+                for(auto &[v, edge]: adjList[u]){        
+                    levelNodes[u].second.push_back(v);
+                }
+            }
+            while(!levelNodes.empty()){
+                for(auto it = levelNodes.begin(); it != levelNodes.end();){
+                    int u = it->first;
+                    if(mlt.getDegree(u) >= degreeConstraint || it->second.first >= (int)it->second.second.size()){
+                        it = levelNodes.erase(it);
+                        continue;
+                    }
+                    int &i = it->second.first;
+                    std::vector<int> &childNodes = it->second.second;
+                    while(i < (int)childNodes.size() && dsSet.connected(u, childNodes[i])){ //i為child node的index
+                        ++i;
+                    }
+                    if(i < (int)childNodes.size()){ //i為child node的index
+                        int v = childNodes[i];
+                        if(dsSet.Union(u, v)){
+                            mlt.addEdge(u, v);
+                            q.push(v);
+                            visited[v] = true;
+                            ++i;
+                        }
+                    }
+                }
+            }
+
+        }
+        for(int i = 0; i < verticesCount; ++i){
+            if(!visited[i]){
+                mlt.setFaulty(); //如果有node沒有被加入tree中，則回傳faulty tree
+                return mlt;
+            }
+        }     
+        mlt.buildLevelAndSubtreeSize();
+        return mlt;
+    }  
+
+    Tree::Tree Graph::bestDegreeConstrainedMinimumLevelTree2(int degreeConstraint){ //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
+        double bestAvgShortestPath = 1000000000;
+        int bestRoot = -1;
+        for(int i = 0; i < verticesCount; ++i){
+            Tree::Tree mlt = degreeConstrainedMinimumLevelTree2(i, degreeConstraint);
+            if(mlt.getSize() == -1){ //如果有node沒有被加入tree中，則跳過
+                continue;
+            }
+            Graph mltGraph = mlt.toGraph();
+            double avgShortestPath = mltGraph.getAverageShortestPathLength();
+            // std::cout<<"avgShortestPath:"<<avgShortestPath<<"\n";
+            if(avgShortestPath < bestAvgShortestPath){
+                // std::cout<<"bestAvgShortestPath:"<<avgShortestPath<<"\n";
+                bestAvgShortestPath = avgShortestPath;
+                bestRoot = i;
+            }
+        }
+        if(bestRoot == -1){
+            std::cout<<"error: bestDegreeConstrainedMinimumLevelTree() can't build a tree with degreeConstraint "<<degreeConstraint<<"\n";
+            exit(1);
+        }
+        Tree::Tree bestMlt = degreeConstrainedMinimumLevelTree2(bestRoot, degreeConstraint);
+        return bestMlt;
+    }       
+
+
     //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)，回傳是否有找到更好的edge
     bool Graph::tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint){
         bool res = false;

@@ -96,6 +96,10 @@ namespace Graph
     
         Tree::Tree bestDegreeConstrainedMinimumLevelTree(int degreeConstraint); //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
 
+        Tree::Tree degreeConstrainedMinimumLevelTree2(int src, int degreeConstraint); //BFS建出minimumLevelTree，限制每個node的最大degree
+    
+        Tree::Tree bestDegreeConstrainedMinimumLevelTree2(int degreeConstraint); //找出以每個node為root的degreeConstrainedMinimumLevelTree中，最好的一個
+
         bool tryBetterEdge(Edge e, std::set<Edge> &notSelectedEdges, int degreeConstraint); //在tree graph中先將Edge e移除，變成兩個connected component以後，嘗試找出更好的edge(使tree的diameter,avg shortest path更小)，回傳是否有找到更好的edge
 
         int treeGraphLocalSearch(Tree::Tree &tree, std::set<Edge> &notSelectedEdges, int degreeConstraint); //從tree的high level開始，循序對每一個edge進行local search，回傳總共更動了幾個edge

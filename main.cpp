@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     std::map<int,std::vector<int>> diameterRecord; //for calculate average value
     for(int times = 0; times < 3000; ++times){
         Graph::Graph brokenGraph = satelliteNetworkGraph.getRandomDeleteEdgeGraph(satelliteNetworkGraph.getEdgesCount()*0.05, translateTool);
-        Graph::Graph g = brokenGraph.getGraphUsingDCRSTAndAddEdgesGreedily(3, 1000, avgShortestPathLengthRecord, diameterRecord);  
+        Graph::Graph g = brokenGraph.getGraphUsingBestDCMLTAndAddEdgesBaseOnTreeStructure(3, 1000, avgShortestPathLengthRecord, diameterRecord);  
     }   
     for(auto &[edgeCount, avgShortestPathLength]: avgShortestPathLengthRecord){
         std::cout<<edgeCount<<": ";
